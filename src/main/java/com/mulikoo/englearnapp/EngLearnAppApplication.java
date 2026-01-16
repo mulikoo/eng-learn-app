@@ -1,0 +1,13 @@
+package com.mulikoo.englearnapp;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class EngLearnAppApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(EngLearnAppApplication.class, args);
+    }
+
+}
