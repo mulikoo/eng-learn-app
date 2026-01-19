@@ -1,1 +1,10 @@
-spring.application.name=eng-learn-app
+  spring.application.name=eng-learn-app
+
+spring:
+  application:
+    name: eng-learn-app
+  datasource:
+    url: jdbc:postgresql://localhost:5432/eng_learn_db
+    username: postgres
+    password: muliko08m
+    driver-class-name: org.postgresql.Driver
