@@ -11,8 +11,7 @@ spring:
 
   flyway:
     enabled: ${FLYWAY_ENABLED:true}
-    baseline-on-migrate: true
 
 logging:
   level:
-    org.flywaydb: DEBUG
+    org.flywaydb: DEBUGnpm start
