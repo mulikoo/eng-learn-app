@@ -8,3 +8,10 @@ spring:
     username: postgres
     password: muliko08m
     driver-class-name: org.postgresql.Driver
+
+  flyway:
+    enabled: ${FLYWAY_ENABLED:true}
+
+logging:
+  level:
+    org.flywaydb: DEBUGnpm start

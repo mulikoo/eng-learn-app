@@ -2,7 +2,6 @@
 services:
   postgres:
     image: postgres:18
-    restart: unless-stopped
     container_name: eng_learn_postgres
     environment:
       POSTGRES_DB: eng_learn_db
