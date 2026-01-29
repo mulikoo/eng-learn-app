@@ -5,10 +5,43 @@ values (gen_random_uuid(), 'Basic Words', 'Basic English words for beginners', N
        (gen_random_uuid(), 'Business English', 'Business and office terminology', NOW(), NOW());
 
 -- пользователи
-insert into users (uid, username, current_category_id, creation_date, modification_date)
-values (gen_random_uuid(), 'john_doe', 1, NOW(), NOW()),
-       (gen_random_uuid(), 'alice_smith', 2, NOW(), NOW()),
-       (gen_random_uuid(), 'bob_wilson', 3, NOW(), NOW());
+insert into user_progress (uid, user_id, status, word_id, attempt_counter, user_clue_types, creation_date,
+                           modification_date)
+select gen_random_uuid(),
+       (select id from users where username = 'john_doe'),
+       'LEARNED',
+       (select id from word where word = 'apple'),
+       3,
+       'hint,translation',
+       NOW(),
+       NOW()
+union all
+select gen_random_uuid(),
+       (select id from users where username = 'john_doe'),
+       'IN_PROGRESS',
+       (select id from word where word = 'database'),
+       1,
+       'hint',
+       NOW(),
+       NOW()
+union all
+select gen_random_uuid(),
+       (select id from users where username = 'alice_smith'),
+       'NEW',
+       (select id from word where word = 'meeting'),
+       0,
+       NULL,
+       NOW(),
+       NOW()
+union all
+select gen_random_uuid(),
+       (select id from users where username = 'bob_wilson'),
+       'LEARNED',
+       (select id from word where word = 'computer'),
+       5,
+       'translation',
+       NOW(),
+       NOW();
 
 -- слова
 insert into word (uid, word, translation, clue, creation_date, modification_date)
@@ -26,13 +59,32 @@ values (gen_random_uuid(), 'https://example.com/images/apple.jpg', 'image/jpeg',
 
 -- связка слов с вложениями
 insert into word_attachment (uid, word_id, attachment_id, creation_date, modification_date)
-values (gen_random_uuid(), 1, 1, NOW(), NOW()),
-       (gen_random_uuid(), 2, 2, NOW(), NOW());
-
+select gen_random_uuid(),
+       (select id from word where word = 'apple'),
+       (select id from attachment where file_url = 'https://example.com/images/apple.jpg'),
+       NOW(),
+       NOW()
+union all
+select gen_random_uuid(),
+       (select id from word where word = 'database'),
+       (select id from attachment where file_url = 'https://example.com/audio/database.mp3'),
+       NOW(),
+       NOW();
 -- прогресс пользователей
 insert into user_progress (uid, user_id, status, word_id, attempt_counter, user_clue_types, creation_date,
                            modification_date)
-values (gen_random_uuid(), 1, 'LEARNED', 1, 3, 'hint,translation', NOW(), NOW()),
-       (gen_random_uuid(), 1, 'IN_PROGRESS', 2, 1, 'hint', NOW(), NOW()),
-       (gen_random_uuid(), 2, 'NEW', 3, 0, NULL, NOW(), NOW()),
-       (gen_random_uuid(), 3, 'LEARNED', 4, 5, 'translation', NOW(), NOW());
+select gen_random_uuid(),
+       u.id,
+       up.status,
+       w.id,
+       up.attempt_counter,
+       up.user_clue_types,
+       NOW(),
+       NOW()
+from (values ('john_doe', 'LEARNED', 'apple', 3, 'hint,translation'),
+             ('john_doe', 'IN_PROGRESS', 'database', 1, 'hint'),
+             ('alice_smith', 'NEW', 'meeting', 0, NULL),
+             ('bob_wilson', 'LEARNED', 'computer', 5,
+              'translation')) as up(username, status, word_text, attempt_counter, user_clue_types)
+         join users u on u.username = up.username
+         join word w on w.word = up.word_text;
