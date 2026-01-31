@@ -27,8 +27,8 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.flywaydb:flyway-core:11.20.2'
-    runtimeOnly 'org.flywaydb:flyway-database-postgresql:11.20.2'
+    implementation 'org.flywaydb:flyway-core:11.20.3'
+    runtimeOnly 'org.flywaydb:flyway-database-postgresql:11.20.3'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'
