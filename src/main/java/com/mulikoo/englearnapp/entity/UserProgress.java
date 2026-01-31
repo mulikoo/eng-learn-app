@@ -5,6 +5,8 @@ import lombok.Setter;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @Table("user_progress")
@@ -22,7 +24,6 @@ public class UserProgress extends BaseEntity {
     @Column("attempt_counter")
     private int attemptCounter;
 
-    @Column("user_clue_types")
-    private String userClueTypes;
+    Set<ClueType> userClueTypes;
 
 }

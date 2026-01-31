@@ -10,10 +10,6 @@ public class EngLearnAppApplication {
     public static void main(String[] args) {
         SpringApplication.run(EngLearnAppApplication.class, args);
 
-//        Category category = Category.builder()
-//                .id(1L)
-//                .name("мага")
-//                .build();
     }
 
 }
