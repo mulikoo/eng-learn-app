@@ -15,7 +15,7 @@ create table word_attachment
 (
     id            BIGSERIAL PRIMARY KEY,
     word_id       BIGINT not null,
-    attachment_id BIGINT not null,
+    attachment_id BIGINT not null
 );
 
 create table attachment
@@ -104,17 +104,17 @@ drop constraint if exists fk_user_progress_word,
 
 -- unique констрайнты
 alter table word
-drop constraint uq_word_name_translation,
+drop constraint if exists uq_word_name_translation,
 add constraint uq_word_name_translation
      unique (name, translation);
 
 alter table word_attachment
-drop constraint uq_word_attachment_word_id_attachment_id,
+drop constraint if exists uq_word_attachment_word_id_attachment_id,
     add constraint uq_word_attachment_word_id_attachment_id
         unique (word_id, attachment_id);
 
 alter table user_progress
-drop constraint uq_user_progress_user_id_word_id,
+drop constraint if exists uq_user_progress_user_id_word_id,
     add constraint uq_user_progress_user_id_word_id
         unique (user_id, word_id);
 
