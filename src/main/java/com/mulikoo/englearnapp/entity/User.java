@@ -8,7 +8,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Getter
 @Setter
 @Table("users")
-public class Users extends BaseEntity{
+public class User extends BaseEntity{
 
     @Column("username")
     private String username;

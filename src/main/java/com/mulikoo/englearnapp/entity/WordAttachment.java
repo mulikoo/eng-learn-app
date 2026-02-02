@@ -8,7 +8,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Getter
 @Setter
 @Table(name = "word_attachment")
-public class WordAttachment {
+public class WordAttachment extends CoreEntity {
 
     @Column("word_id")
     private Long wordId;
