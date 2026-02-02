@@ -24,6 +24,7 @@ public class UserProgress extends BaseEntity {
     @Column("attempt_counter")
     private int attemptCounter;
 
-    Set<ClueType> userClueTypes;
+    @Column("user_clue_types")
+    private Set<ClueType> userClueTypes;
 
 }

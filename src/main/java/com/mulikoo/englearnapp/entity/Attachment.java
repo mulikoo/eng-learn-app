@@ -13,5 +13,6 @@ public class Attachment extends BaseEntity {
     @Column("file_url")
     private String fileUrl;
 
+    @Column("media_type")
     private MediaType mediaType;
 }
