@@ -1,4 +1,4 @@
-package com.mulikoo.englearnapp.entity;
+package com.mulikoo.englearnapp.enums;
 
 import lombok.Getter;
 

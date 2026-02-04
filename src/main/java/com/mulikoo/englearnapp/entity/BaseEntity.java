@@ -12,7 +12,7 @@ import java.util.UUID;
 public abstract class BaseEntity extends CoreEntity {
 
     @Column("uid")
-    protected UUID uuid;
+    protected UUID uid;
 
     @Column("creation_date")
     protected LocalDateTime creationDate;
