@@ -1,5 +1,6 @@
 package com.mulikoo.englearnapp.entity;
 
+import com.mulikoo.englearnapp.enums.ClueType;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.relational.core.mapping.Column;
