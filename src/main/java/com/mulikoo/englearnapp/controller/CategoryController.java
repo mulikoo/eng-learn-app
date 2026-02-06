@@ -50,7 +50,7 @@ public class CategoryController {
     public ResponseEntity<CategoryDto> updateCategory(@PathVariable UUID uid,@RequestBody CategoryDto categoryDto) {
         log.info("обновление категории по uid: {}", uid.toString());
 
-        var mockResponse = new CategoryDto();
+        var mockResponse = categoryDto;
         mockResponse.setUid(uid);
         mockResponse.setCreationDate(LocalDateTime.now());
         mockResponse.setModificationDate(LocalDateTime.now());
