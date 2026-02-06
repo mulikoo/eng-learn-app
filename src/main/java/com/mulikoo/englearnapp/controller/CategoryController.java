@@ -25,8 +25,8 @@ public class CategoryController {
 
         var mockResponse = new CategoryDto();
         mockResponse.setUid(uid);
-        mockResponse.setName("name");
-        mockResponse.setDescription("description");
+        mockResponse.setName("новичок");
+        mockResponse.setDescription("базовый уровень");
         mockResponse.setCreationDate(LocalDateTime.now());
         mockResponse.setModificationDate(LocalDateTime.now());
 
