@@ -25,8 +25,8 @@ public class WordController {
 
         var mockResponse = new WordDto();
         mockResponse.setUid(uid);
-        mockResponse.setName("name");
-        mockResponse.setTranslation("translation");
+        mockResponse.setName("apple");
+        mockResponse.setTranslation("яблоко");
         mockResponse.setCreationDate(LocalDateTime.now());
         mockResponse.setModificationDate(LocalDateTime.now());
 
@@ -66,4 +66,3 @@ public class WordController {
     }
 
 }
-

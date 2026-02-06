@@ -49,7 +49,7 @@ public class UserController {
     public ResponseEntity<UserDto> updateUser(@PathVariable UUID uid, @RequestBody UserDto userDto) {
         log.info("обновление пользователя по uid: {}", uid.toString());
 
-        var mockResponse = new UserDto();
+        var mockResponse = userDto;
         mockResponse.setUid(uid);
         mockResponse.setCreationDate(LocalDateTime.now());
         mockResponse.setModificationDate(LocalDateTime.now());
