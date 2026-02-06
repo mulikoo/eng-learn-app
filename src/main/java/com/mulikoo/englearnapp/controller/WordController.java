@@ -1,7 +1,9 @@
 package com.mulikoo.englearnapp.controller;
 
 import com.mulikoo.englearnapp.dto.WordDto;
+import com.mulikoo.englearnapp.entity.Word;
 import com.mulikoo.englearnapp.mapper.WordMapper;
+import com.mulikoo.englearnapp.service.WordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -9,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequestMapping("/api/v1/words")
@@ -18,19 +21,18 @@ import java.util.UUID;
 public class WordController {
 
     private final WordMapper wordMapper;
+    private final WordService wordService;
 
     @GetMapping("/{uid}")
     public ResponseEntity<WordDto> getWord(@PathVariable("uid") UUID uid) {
         log.info("попытка получения слова по uid: {}", uid.toString());
 
-        var mockResponse = new WordDto();
-        mockResponse.setUid(uid);
-        mockResponse.setName("apple");
-        mockResponse.setTranslation("яблоко");
-        mockResponse.setCreationDate(LocalDateTime.now());
-        mockResponse.setModificationDate(LocalDateTime.now());
+        Optional<Word> result = wordService.findByUid(uid);
+        if (result.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
-        return ResponseEntity.ok(mockResponse);
+        return ResponseEntity.ok(wordMapper.toDto(result.get()));
     }
 
     @PostMapping
