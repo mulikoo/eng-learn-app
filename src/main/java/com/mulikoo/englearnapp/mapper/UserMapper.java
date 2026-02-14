@@ -7,13 +7,13 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {CategoryMapper.class})
 public interface UserMapper {
 
-    @Mapping(target = "currentCategoryUid", ignore = true)
+    @Mapping(target = "currentCategoryUid", source = "currentCategoryId", qualifiedByName = "CategoryIdToUid")
     UserDto toDto(User user);
 
-    @Mapping(target = "currentCategoryId", ignore = true)
+    @Mapping(target = "currentCategoryId", source = "currentCategoryUid", qualifiedByName = "CategoryUidToId")
     User toEntity(UserDto userDto);
 
 }

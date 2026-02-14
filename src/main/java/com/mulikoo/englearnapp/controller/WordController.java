@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,31 +39,31 @@ public class WordController {
         log.info("создание нового слова. получили name:{}, translation: {}",
                 wordDto.getName(), wordDto.getTranslation());
 
-        var mockResponse = wordDto;
-        mockResponse.setUid(UUID.randomUUID());
-        mockResponse.setCreationDate(LocalDateTime.now());
-        mockResponse.setModificationDate(LocalDateTime.now());
-
-        return new ResponseEntity<>(mockResponse, HttpStatus.CREATED); //вернули исходящую dto
+        Optional<Word> result = wordService.create(wordDto);
+        if (result.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(wordMapper.toDto(result.get()), HttpStatus.CREATED);
     }
 
     @PutMapping("/{uid}")
     public ResponseEntity<WordDto> updateWord(@PathVariable("uid") UUID uid, @RequestBody WordDto wordDto) {
         log.info("обновление слова по uid: {}", uid.toString());
 
-        var mockResponse = wordDto;
-        mockResponse.setUid(uid);
-        mockResponse.setCreationDate(LocalDateTime.now().minusDays(2));
-        mockResponse.setModificationDate(LocalDateTime.now());
-
-        return ResponseEntity.ok(mockResponse);
+        Optional<Word> result = wordService.update(uid, wordDto);
+        if (result.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(wordMapper.toDto(result.get()));
     }
 
     @DeleteMapping("/{uid}")
-    public ResponseEntity<Void> deleteWord(@PathVariable("uid") UUID uid) {
+    public ResponseEntity<WordDto> deleteWord(@PathVariable("uid") UUID uid) {
         log.info("удаление слова по uid: {}", uid.toString());
 
-        return ResponseEntity.ok().build();
+        wordService.deleteByUid(uid);
+
+        return ResponseEntity.noContent().build();
     }
 
 }

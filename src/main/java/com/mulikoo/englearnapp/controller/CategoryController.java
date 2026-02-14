@@ -1,14 +1,16 @@
 package com.mulikoo.englearnapp.controller;
 
 import com.mulikoo.englearnapp.dto.CategoryDto;
+import com.mulikoo.englearnapp.entity.Category;
 import com.mulikoo.englearnapp.mapper.CategoryMapper;
+import com.mulikoo.englearnapp.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequestMapping("/api/v1/categories")
@@ -18,51 +20,48 @@ import java.util.UUID;
 public class CategoryController {
 
     private final CategoryMapper categoryMapper;
+    private final CategoryService categoryService;
 
     @GetMapping("/{uid}")
     public ResponseEntity<CategoryDto> getCategory(@PathVariable("uid") UUID uid) {
         log.info("попытка получения категория по uid: {}", uid.toString());
 
-        var mockResponse = new CategoryDto();
-        mockResponse.setUid(uid);
-        mockResponse.setName("новичок");
-        mockResponse.setDescription("базовый уровень");
-        mockResponse.setCreationDate(LocalDateTime.now());
-        mockResponse.setModificationDate(LocalDateTime.now());
-
-        return ResponseEntity.ok(mockResponse);
+        Optional<Category> result = categoryService.findByUid(uid);
+        if (result.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(categoryMapper.toDto(result.get()));
     }
 
     @PostMapping
     public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto categoryDto) {
         log.info("создание новой категории. получили name{}", categoryDto.getName());
 
-        var mockResponse = new CategoryDto();
-        mockResponse.setName(categoryDto.getName());
-        mockResponse.setDescription(categoryDto.getDescription());
-        mockResponse.setCreationDate(LocalDateTime.now());
-        mockResponse.setModificationDate(LocalDateTime.now());
-
-        return new ResponseEntity<>(mockResponse, HttpStatus.CREATED);
+        Optional<Category> result = categoryService.create(categoryDto);
+        if (result.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(categoryMapper.toDto(result.get()), HttpStatus.CREATED);
     }
 
     @PutMapping("/{uid}")
-    public ResponseEntity<CategoryDto> updateCategory(@PathVariable UUID uid,@RequestBody CategoryDto categoryDto) {
+    public ResponseEntity<CategoryDto> updateCategory(@PathVariable("uid") UUID uid, @RequestBody CategoryDto categoryDto) {
         log.info("обновление категории по uid: {}", uid.toString());
 
-        var mockResponse = categoryDto;
-        mockResponse.setUid(uid);
-        mockResponse.setCreationDate(LocalDateTime.now());
-        mockResponse.setModificationDate(LocalDateTime.now());
-
-        return ResponseEntity.ok(mockResponse);
+        Optional<Category> result = categoryService.update(uid, categoryDto);
+        if (result.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(categoryMapper.toDto(result.get()));
     }
 
     @DeleteMapping("/{uid}")
-    public ResponseEntity<CategoryDto> deleteCategory(@PathVariable UUID uid) {
+    public ResponseEntity<CategoryDto> deleteCategory(@PathVariable("uid") UUID uid) {
         log.info("удаление категории по uid: {}", uid.toString());
 
-        return ResponseEntity.ok().build();
+        categoryService.deleteByUid(uid);
+
+        return ResponseEntity.noContent().build();
     }
 
 }
