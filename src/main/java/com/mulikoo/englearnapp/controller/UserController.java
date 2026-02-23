@@ -45,17 +45,6 @@ public class UserController {
 
     }
 
-    //public ResponseEntity<WordDto> createWord(@RequestBody WordDto wordDto) {
-    //        log.info("создание нового слова. получили name:{}, translation: {}",
-    //                wordDto.getName(), wordDto.getTranslation());
-    //
-    //        Optional<Word> result = wordService.create(wordDto);
-    //        if (result.isEmpty()) {
-    //            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    //        }
-    //        return new ResponseEntity<>(wordMapper.toDto(result.get()), HttpStatus.CREATED);
-    //    }
-
     @PutMapping("/{uid}")
     public ResponseEntity<UserDto> updateUser(@PathVariable("uid") UUID uid, @RequestBody UserDto userDto) {
         log.info("обновление пользователя по uid: {}", uid.toString());
