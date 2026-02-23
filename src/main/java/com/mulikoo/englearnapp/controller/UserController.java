@@ -4,16 +4,21 @@ import com.mulikoo.englearnapp.dto.UserDto;
 import com.mulikoo.englearnapp.entity.User;
 import com.mulikoo.englearnapp.mapper.UserMapper;
 import com.mulikoo.englearnapp.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 import java.util.UUID;
 
 @RequestMapping("/api/v1/users")
+@Tag(name = "Контроллер для пользователей", description = "Контроллер для управление пользователями")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -23,7 +28,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{uid}")
-    public ResponseEntity<UserDto> getUser(@PathVariable("uid") UUID uid) {
+    @Operation(summary = "Получение пользователя по uid", description = "Возвращает пользователя")
+    public ResponseEntity<UserDto> getUser(@Parameter(description = "uid пользвателя") @PathVariable("uid") UUID uid) {
         log.info("попытка получения пользователя по uid: {}", uid.toString());
 
         Optional<User> result = userService.findByUid(uid);
@@ -34,7 +40,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+    @Operation(summary = "Создание нового пользователя", description = "Создание нового пользователя по uid")
+    public ResponseEntity<UserDto> createUser(@RequestBody @Validated UserDto userDto) {
         log.info("создание нового пользователя. получили username{}", userDto.getUsername());
 
         Optional<User> result = userService.create(userDto);
@@ -46,10 +53,12 @@ public class UserController {
     }
 
     @PutMapping("/{uid}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable("uid") UUID uid, @RequestBody UserDto userDto) {
+    @Operation(summary = "Обновление пользователя", description = "Позволяет обновлять пользователя")
+    public ResponseEntity<UserDto> updateUser(@Parameter(description = "uid пользователя")
+                                              @PathVariable("uid") UUID uid, @RequestBody UserDto userDto) {
         log.info("обновление пользователя по uid: {}", uid.toString());
 
-        Optional<User> resulte =  userService.update(uid, userDto);
+        Optional<User> resulte = userService.update(uid, userDto);
         if (resulte.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -58,6 +67,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{uid}")
+    @Operation(summary = "Удаление пользователя", description = "Позволяет удалять польхователя")
     public ResponseEntity<UserDto> deleteUser(@PathVariable("uid") UUID uid) {
         log.info("удаление пользователя по uid: {}", uid.toString());
 
