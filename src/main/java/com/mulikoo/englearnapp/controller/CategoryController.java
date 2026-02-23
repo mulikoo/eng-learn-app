@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RequestMapping("/api/v1/categories")
+@Tag(name = "Контроллер категории", description = "Контроллер для управления категориями")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
