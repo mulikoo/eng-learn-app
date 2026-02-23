@@ -13,5 +13,5 @@ public interface WordRepository extends CrudRepository<Word, Long> {
     Optional<Word> findByUid(UUID uid);
 
     void deleteByUid(UUID uid);
-
 }
+
