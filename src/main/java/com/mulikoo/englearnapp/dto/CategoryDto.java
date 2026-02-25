@@ -20,11 +20,11 @@ public class CategoryDto {
     @Schema(description = "описание категории", example = "английский для работы в коллективе")
     private String description;
 
-    @Schema(description = "дата создания", example = "2026-02-21")
+    @Schema(description = "дата создания", example = "2026-02-15T20:41:45.104673")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime creationDate;
 
-    @Schema(description = "дата изменения", example = "2026-02-22")
+    @Schema(description = "дата изменения", example = "2026-02-15T20:41:45.104673")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime modificationDate;
 }

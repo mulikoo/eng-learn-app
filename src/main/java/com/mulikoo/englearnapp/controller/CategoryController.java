@@ -41,7 +41,7 @@ public class CategoryController {
 
     @PostMapping
     @Operation(summary = "Создание категории", description = "Позволяет создавать каегорию")
-    public ResponseEntity<CategoryDto> createCategory(@RequestBody @Validated CategoryDto categoryDto) {
+    public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto categoryDto) {
         log.info("создание новой категории. получили name{}", categoryDto.getName());
 
         Optional<Category> result = categoryService.create(categoryDto);
@@ -53,7 +53,7 @@ public class CategoryController {
 
     @PutMapping("/{uid}")
     @Operation(summary = "Обновление категории", description = "Позволяет обновлять каегорию")
-    public ResponseEntity<CategoryDto> updateCategory(@Parameter(description = "uid категории для обновления")
+    public ResponseEntity<CategoryDto> updateCategory(@Parameter(description = "uid категории")
                                                       @PathVariable("uid") UUID uid, @RequestBody CategoryDto categoryDto) {
         log.info("обновление категории по uid: {}", uid.toString());
 
@@ -66,7 +66,7 @@ public class CategoryController {
 
     @DeleteMapping("/{uid}")
     @Operation(summary = "Удаление категории", description = "Позволяет удалять каегорию")
-    public ResponseEntity<CategoryDto> deleteCategory(@PathVariable("uid") UUID uid) {
+    public ResponseEntity<CategoryDto> deleteCategory(@Parameter(description = "uid категории") @PathVariable("uid") UUID uid) {
         log.info("удаление категории по uid: {}", uid.toString());
 
         categoryService.deleteByUid(uid);
