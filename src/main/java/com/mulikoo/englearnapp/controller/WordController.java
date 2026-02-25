@@ -42,7 +42,7 @@ public class WordController {
 
     @PostMapping
     @Operation(summary = "Создание нового слова", description = "Создание нового слова по uid")
-    public ResponseEntity<WordDto> createWord(@RequestBody @Validated WordDto wordDto) {
+    public ResponseEntity<WordDto> createWord(@RequestBody WordDto wordDto) {
         log.info("создание нового слова. получили name:{}, translation: {}",
                 wordDto.getName(), wordDto.getTranslation());
 
@@ -68,7 +68,7 @@ public class WordController {
 
     @DeleteMapping("/{uid}")
     @Operation(summary = "Удаление слова", description = "Позволяет удалять слова")
-    public ResponseEntity<WordDto> deleteWord(@PathVariable("uid") UUID uid) {
+    public ResponseEntity<WordDto> deleteWord(@Parameter(description = "uid категории") @PathVariable("uid") UUID uid) {
         log.info("удаление слова по uid: {}", uid.toString());
 
         wordService.deleteByUid(uid);

@@ -41,7 +41,7 @@ public class UserController {
 
     @PostMapping
     @Operation(summary = "Создание нового пользователя", description = "Создание нового пользователя по uid")
-    public ResponseEntity<UserDto> createUser(@RequestBody @Validated UserDto userDto) {
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
         log.info("создание нового пользователя. получили username{}", userDto.getUsername());
 
         Optional<User> result = userService.create(userDto);
@@ -68,7 +68,7 @@ public class UserController {
 
     @DeleteMapping("/{uid}")
     @Operation(summary = "Удаление пользователя", description = "Позволяет удалять польхователя")
-    public ResponseEntity<UserDto> deleteUser(@PathVariable("uid") UUID uid) {
+    public ResponseEntity<UserDto> deleteUser(@Parameter(description = "uid категории") @PathVariable("uid") UUID uid) {
         log.info("удаление пользователя по uid: {}", uid.toString());
 
         userService.deleteByUid(uid);

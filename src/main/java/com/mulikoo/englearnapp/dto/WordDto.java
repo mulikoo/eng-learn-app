@@ -27,11 +27,11 @@ public class WordDto {
     @Schema(description = "uid ссылка на категорию", example = "321e4468-e89b-12d3-a456-426614174000")
     private UUID categoryUid;
 
-    @Schema(description = "дата создания", example = "2026-02-21")
+    @Schema(description = "дата создания", example = "2026-02-15T20:41:45.104673")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime creationDate;
 
-    @Schema(description = "дата изменения", example = "2026-02-22")
+    @Schema(description = "дата изменения", example = "2026-02-15T20:41:45.104673")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime modificationDate;
 }
