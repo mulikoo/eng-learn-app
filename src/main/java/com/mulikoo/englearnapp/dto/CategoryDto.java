@@ -2,6 +2,8 @@ package com.mulikoo.englearnapp.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -10,13 +12,16 @@ import java.util.UUID;
 @Data
 @Schema(description = "категория")
 public class CategoryDto {
+    @NotNull
     @Schema(description = "uid - уникальный индентификатор", example = "123e4567-e89b-12d3-a456-426614174000")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID uid;
 
+    @NotNull
     @Schema(description = "название категории", example = "бизнес английский")
     private String name;
 
+    @NotNull
     @Schema(description = "описание категории", example = "английский для работы в коллективе")
     private String description;
 
