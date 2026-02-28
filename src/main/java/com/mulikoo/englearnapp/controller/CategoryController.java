@@ -7,6 +7,7 @@ import com.mulikoo.englearnapp.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RequestMapping("/api/v1/categories")
-@Tag(name = "Контроллер категории", description = "Контроллер для управления категориями")
+@Tag(name = "Контроллер для категорий", description = "Контроллер для управления категориями")
+@Validated
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -29,7 +31,7 @@ public class CategoryController {
 
     @GetMapping("/{uid}")
     @Operation(summary = "Получение категории по uid", description = "Возвращает категорию")
-    public ResponseEntity<CategoryDto> getCategory(@Parameter(description = "uid категории") @PathVariable("uid") UUID uid) {
+    public ResponseEntity<CategoryDto> getCategory(@Parameter(description = "uid категории") @NotNull @PathVariable("uid") UUID uid) {
         log.info("попытка получения категория по uid: {}", uid.toString());
 
         Optional<Category> result = categoryService.findByUid(uid);
@@ -41,7 +43,7 @@ public class CategoryController {
 
     @PostMapping
     @Operation(summary = "Создание категории", description = "Позволяет создавать каегорию")
-    public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto categoryDto) {
+    public ResponseEntity<CategoryDto> createCategory(@Validated @RequestBody CategoryDto categoryDto) {
         log.info("создание новой категории. получили name{}", categoryDto.getName());
 
         Optional<Category> result = categoryService.create(categoryDto);
@@ -54,7 +56,7 @@ public class CategoryController {
     @PutMapping("/{uid}")
     @Operation(summary = "Обновление категории", description = "Позволяет обновлять каегорию")
     public ResponseEntity<CategoryDto> updateCategory(@Parameter(description = "uid категории")
-                                                      @PathVariable("uid") UUID uid, @RequestBody CategoryDto categoryDto) {
+                                                      @NotNull @PathVariable("uid") UUID uid, @Validated @RequestBody CategoryDto categoryDto) {
         log.info("обновление категории по uid: {}", uid.toString());
 
         Optional<Category> result = categoryService.update(uid, categoryDto);
@@ -66,7 +68,7 @@ public class CategoryController {
 
     @DeleteMapping("/{uid}")
     @Operation(summary = "Удаление категории", description = "Позволяет удалять каегорию")
-    public ResponseEntity<CategoryDto> deleteCategory(@Parameter(description = "uid категории") @PathVariable("uid") UUID uid) {
+    public ResponseEntity<CategoryDto> deleteCategory(@Parameter(description = "uid категории") @NotNull @PathVariable("uid") UUID uid) {
         log.info("удаление категории по uid: {}", uid.toString());
 
         categoryService.deleteByUid(uid);
