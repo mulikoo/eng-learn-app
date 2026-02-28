@@ -2,6 +2,8 @@ package com.mulikoo.englearnapp.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -15,15 +17,19 @@ public class WordDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID uid;
 
+    @NotBlank(message = "слово не может быть пустым")
     @Schema(description = "само слово", example = "apple")
     private String name;
 
+    @NotBlank(message = "перевод не может быть пустым")
     @Schema(description = "перевод слова", example = "яблоко")
     private String translation;
 
+    @NotBlank(message = "подсказка не может быть пустой")
     @Schema(description = "подсказка", example = "круглый фрукт")
     private String clue;
 
+    @NotNull
     @Schema(description = "uid ссылка на категорию", example = "321e4468-e89b-12d3-a456-426614174000")
     private UUID categoryUid;
 

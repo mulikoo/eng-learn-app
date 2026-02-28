@@ -7,6 +7,7 @@ import com.mulikoo.englearnapp.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import java.util.UUID;
 
 @RequestMapping("/api/v1/users")
 @Tag(name = "Контроллер для пользователей", description = "Контроллер для управление пользователями")
+@Validated
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -29,7 +31,7 @@ public class UserController {
 
     @GetMapping("/{uid}")
     @Operation(summary = "Получение пользователя по uid", description = "Возвращает пользователя")
-    public ResponseEntity<UserDto> getUser(@Parameter(description = "uid пользвателя") @PathVariable("uid") UUID uid) {
+    public ResponseEntity<UserDto> getUser(@Parameter(description = "uid пользвателя") @NotNull @PathVariable("uid") UUID uid) {
         log.info("попытка получения пользователя по uid: {}", uid.toString());
 
         Optional<User> result = userService.findByUid(uid);
@@ -41,7 +43,7 @@ public class UserController {
 
     @PostMapping
     @Operation(summary = "Создание нового пользователя", description = "Создание нового пользователя по uid")
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> createUser(@Validated @RequestBody UserDto userDto) {
         log.info("создание нового пользователя. получили username{}", userDto.getUsername());
 
         Optional<User> result = userService.create(userDto);
@@ -55,7 +57,7 @@ public class UserController {
     @PutMapping("/{uid}")
     @Operation(summary = "Обновление пользователя", description = "Позволяет обновлять пользователя")
     public ResponseEntity<UserDto> updateUser(@Parameter(description = "uid пользователя")
-                                              @PathVariable("uid") UUID uid, @RequestBody UserDto userDto) {
+                                              @NotNull @PathVariable("uid") UUID uid, @Validated @RequestBody UserDto userDto) {
         log.info("обновление пользователя по uid: {}", uid.toString());
 
         Optional<User> resulte = userService.update(uid, userDto);
@@ -68,7 +70,7 @@ public class UserController {
 
     @DeleteMapping("/{uid}")
     @Operation(summary = "Удаление пользователя", description = "Позволяет удалять польхователя")
-    public ResponseEntity<UserDto> deleteUser(@Parameter(description = "uid категории") @PathVariable("uid") UUID uid) {
+    public ResponseEntity<UserDto> deleteUser(@Parameter(description = "uid категории") @NotNull @PathVariable("uid") UUID uid) {
         log.info("удаление пользователя по uid: {}", uid.toString());
 
         userService.deleteByUid(uid);

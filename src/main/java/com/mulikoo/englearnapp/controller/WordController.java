@@ -7,6 +7,7 @@ import com.mulikoo.englearnapp.service.WordService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import java.util.UUID;
 
 @RequestMapping("/api/v1/words")
 @Tag(name = "Контроллер для слов", description = "Контроллер для управления слов")
+@Validated
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -29,7 +31,7 @@ public class WordController {
 
     @GetMapping("/{uid}")
     @Operation(summary = "Получение слова по uid", description = "Возвращает слово")
-    public ResponseEntity<WordDto> getWord(@Parameter(description = "uid слова") @PathVariable("uid") UUID uid) {
+    public ResponseEntity<WordDto> getWord(@Parameter(description = "uid слова") @NotNull @PathVariable("uid") UUID uid) {
         log.info("попытка получения слова по uid: {}", uid.toString());
 
         Optional<Word> result = wordService.findByUid(uid);
@@ -42,7 +44,7 @@ public class WordController {
 
     @PostMapping
     @Operation(summary = "Создание нового слова", description = "Создание нового слова по uid")
-    public ResponseEntity<WordDto> createWord(@RequestBody WordDto wordDto) {
+    public ResponseEntity<WordDto> createWord(@Validated @RequestBody WordDto wordDto) {
         log.info("создание нового слова. получили name:{}, translation: {}",
                 wordDto.getName(), wordDto.getTranslation());
 
@@ -56,7 +58,7 @@ public class WordController {
     @PutMapping("/{uid}")
     @Operation(summary = "Обновление слова", description = "Позволяет обновлять слово")
     public ResponseEntity<WordDto> updateWord(@Parameter(description = "uid слова")
-                                              @PathVariable("uid") UUID uid, @RequestBody WordDto wordDto) {
+                                              @NotNull @PathVariable("uid") UUID uid, @Validated @RequestBody WordDto wordDto) {
         log.info("обновление слова по uid: {}", uid.toString());
 
         Optional<Word> result = wordService.update(uid, wordDto);
@@ -68,7 +70,7 @@ public class WordController {
 
     @DeleteMapping("/{uid}")
     @Operation(summary = "Удаление слова", description = "Позволяет удалять слова")
-    public ResponseEntity<WordDto> deleteWord(@Parameter(description = "uid категории") @PathVariable("uid") UUID uid) {
+    public ResponseEntity<WordDto> deleteWord(@Parameter(description = "uid категории") @NotNull @PathVariable("uid") UUID uid) {
         log.info("удаление слова по uid: {}", uid.toString());
 
         wordService.deleteByUid(uid);

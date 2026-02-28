@@ -2,6 +2,7 @@ package com.mulikoo.englearnapp.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -14,9 +15,11 @@ public class CategoryDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID uid;
 
+    @NotBlank(message = "название категории не может быть пустым")
     @Schema(description = "название категории", example = "бизнес английский")
     private String name;
 
+    @NotBlank(message = "описание категории не может быть пустым")
     @Schema(description = "описание категории", example = "английский для работы в коллективе")
     private String description;
 
