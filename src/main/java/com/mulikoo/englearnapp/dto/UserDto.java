@@ -16,13 +16,12 @@ import java.util.UUID;
 @Schema(description = "пользователь")
 public class UserDto {
 
-    @NotNull
     @Schema(description = "uid - уникальный индентификатор", example = "123e4567-e89b-12d3-a456-426614174000")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID uid;
 
-    @NotNull(message = "имя пользователя не может быть пустым")
-    @Size(min=2, max=15)
+    @NotBlank(message = "имя пользователя не может быть пустым")
+    @Size(min=5, max=32)
     @Schema(description = "юзернейм пользователя", example = "ivan006")
     private String username;
 
@@ -30,12 +29,10 @@ public class UserDto {
     @Schema(description = "uid ссылка на категорию", example = "321e4468-e89b-12d3-a456-426614174000")
     private UUID currentCategoryUid;
 
-    @PastOrPresent
     @Schema(description = "дата создания", example = "2026-02-15T20:41:45.104673")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime creationDate;
 
-    @PastOrPresent
     @Schema(description = "дата изменения", example = "2026-02-15T20:41:45.104673")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime modificationDate;

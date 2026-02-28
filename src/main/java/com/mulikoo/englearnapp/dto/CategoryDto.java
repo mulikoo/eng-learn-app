@@ -12,16 +12,15 @@ import java.util.UUID;
 @Data
 @Schema(description = "категория")
 public class CategoryDto {
-    @NotNull
     @Schema(description = "uid - уникальный индентификатор", example = "123e4567-e89b-12d3-a456-426614174000")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID uid;
 
-    @NotNull
+    @NotBlank(message = "название категории не может быть пустым")
     @Schema(description = "название категории", example = "бизнес английский")
     private String name;
 
-    @NotNull
+    @NotBlank(message = "описание категории не может быть пустым")
     @Schema(description = "описание категории", example = "английский для работы в коллективе")
     private String description;
 

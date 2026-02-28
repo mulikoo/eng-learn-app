@@ -12,20 +12,19 @@ import java.util.UUID;
 @Data
 @Schema(description = "слово")
 public class WordDto {
-    @NotNull
     @Schema(description = "uid - уникальный индентификатор", example = "143e4567-e79b-24d3-a456-426614174111")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID uid;
 
-    @NotNull
+    @NotBlank(message = "слово не может быть пустым")
     @Schema(description = "само слово", example = "apple")
     private String name;
 
-    @NotNull
+    @NotBlank(message = "перевод не может быть пустым")
     @Schema(description = "перевод слова", example = "яблоко")
     private String translation;
 
-    @NotNull
+    @NotBlank(message = "подсказка не может быть пустой")
     @Schema(description = "подсказка", example = "круглый фрукт")
     private String clue;
 
