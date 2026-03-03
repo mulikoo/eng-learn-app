@@ -24,4 +24,6 @@ public interface CategoryRepository extends CrudRepository<Category, Long> {
 
     @Query("select id from category where name = :name")
     Optional<Long> findIdByName(@Param("name") String name);
+
+    boolean existsByName(String name);
 }

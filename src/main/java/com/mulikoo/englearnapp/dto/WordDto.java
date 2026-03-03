@@ -29,7 +29,7 @@ public class WordDto {
     @Schema(description = "подсказка", example = "круглый фрукт")
     private String clue;
 
-    @NotNull
+    @NotNull(message = "uid категории не может быть пустым")
     @Schema(description = "uid ссылка на категорию", example = "321e4468-e89b-12d3-a456-426614174000")
     private UUID categoryUid;
 

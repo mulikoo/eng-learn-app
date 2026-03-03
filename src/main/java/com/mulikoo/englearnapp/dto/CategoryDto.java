@@ -11,7 +11,7 @@ import java.util.UUID;
 @Data
 @Schema(description = "категория")
 public class CategoryDto {
-    @Schema(description = "uid - уникальный индентификатор", example = "123e4567-e89b-12d3-a456-426614174000")
+    @Schema(description = "uid - уникальный идентификатор", example = "123e4567-e89b-12d3-a456-426614174000")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID uid;
 

@@ -2,8 +2,10 @@ package com.mulikoo.englearnapp.service;
 
 import com.mulikoo.englearnapp.dto.CategoryDto;
 import com.mulikoo.englearnapp.entity.Category;
+import com.mulikoo.englearnapp.exceptions.EntityAlreadyExistsException;
 import com.mulikoo.englearnapp.exceptions.EntityNotFoundException;
 import com.mulikoo.englearnapp.repository.CategoryRepository;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
@@ -30,7 +32,13 @@ public class CategoryService {
     }
 
     @Transactional
-    public Optional <Category> create(@Nullable CategoryDto categoryDto) {
+    public Optional <Category> create(@NonNull CategoryDto categoryDto) {
+        if (categoryRepository.existsByName(categoryDto.getName())) {
+            log.warn("category already exists");
+
+            throw new EntityAlreadyExistsException("category already exists");
+        }
+
         Category category = new Category();
 
         category.setUid(UUID.randomUUID());
@@ -43,12 +51,11 @@ public class CategoryService {
     }
 
     @Transactional
-    public Optional<Category> update(@Nullable UUID uid, @Nullable CategoryDto categoryDto) {
+    public Optional<Category> update(@NonNull UUID uid, @NonNull CategoryDto categoryDto) {
         Optional<Category> currentCategory = findByUid(uid);
-        if (currentCategory.isPresent()) {
-            log.warn("category already exists");
-
-            throw new EntityNotFoundException("category already exists");
+        if (currentCategory.isEmpty()) {
+            log.warn("category с uid: {} не существует", uid);
+            throw new EntityNotFoundException("category не существует");
         }
 
         return currentCategory

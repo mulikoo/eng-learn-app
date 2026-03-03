@@ -5,12 +5,12 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class PersonExceptionDto {
+public class ErrorResponseDto {
 
     private String message;
     private String error;
 
-    public PersonExceptionDto(String message, String error) {
+    public ErrorResponseDto(String message, String error) {
         this.message = message;
         this.error = error;
     }
