@@ -2,6 +2,7 @@ package com.mulikoo.englearnapp.service;
 
 import com.mulikoo.englearnapp.dto.UserDto;
 import com.mulikoo.englearnapp.entity.User;
+import com.mulikoo.englearnapp.exceptions.EntityAlreadyExistsException;
 import com.mulikoo.englearnapp.exceptions.EntityNotFoundException;
 import com.mulikoo.englearnapp.repository.CategoryRepository;
 import com.mulikoo.englearnapp.repository.UserRepository;
@@ -35,6 +36,11 @@ public class UserService {
 
     @Transactional
     public Optional<User> create(@NonNull UserDto dto) {
+
+        if (userRepository.existsByUsername(dto.getUsername())) {
+            throw new EntityAlreadyExistsException("user already exists");
+        }
+
         Optional<Long> categoryIdOp = categoryRepository.findIdByName(DEFAULT_CATEGORY_NAME);
 
         if (categoryIdOp.isEmpty()) {
@@ -57,9 +63,7 @@ public class UserService {
     public Optional<User> update(@NonNull UUID uid, @NonNull UserDto userDto) {
         Optional<User> currentUser = findByUid(uid);
         if (currentUser.isEmpty()) {
-            log.warn("uid is null");
-
-            throw new EntityNotFoundException("uid not found" + uid);
+            throw new EntityNotFoundException("user not found by uid: " + uid);
         }
 
         Optional<Long> categoryIdOp = categoryRepository.findIdByUid(userDto.getCurrentCategoryUid());

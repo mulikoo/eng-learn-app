@@ -14,4 +14,6 @@ public interface WordRepository extends CrudRepository<Word, Long> {
 
     void deleteByUid(UUID uid);
 
+    boolean existsByNameAndTranslation(String name, String translation);
+
 }

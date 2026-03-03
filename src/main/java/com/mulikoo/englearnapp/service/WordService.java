@@ -3,6 +3,7 @@ package com.mulikoo.englearnapp.service;
 import com.mulikoo.englearnapp.dto.WordDto;
 import com.mulikoo.englearnapp.entity.Category;
 import com.mulikoo.englearnapp.entity.Word;
+import com.mulikoo.englearnapp.exceptions.EntityAlreadyExistsException;
 import com.mulikoo.englearnapp.exceptions.EntityNotFoundException;
 import com.mulikoo.englearnapp.repository.CategoryRepository;
 import com.mulikoo.englearnapp.repository.WordRepository;
@@ -37,6 +38,10 @@ public class WordService {
     @Transactional
     public Optional<Word> create(@NonNull WordDto dto) {
 
+        if(wordRepository.existsByNameAndTranslation(dto.getName(), dto.getTranslation())){
+            throw new EntityAlreadyExistsException("word уже существует");
+        }
+
         Optional<Category> category = categoryRepository.findByUid(dto.getCategoryUid());
 
         if (category.isEmpty()) {
@@ -60,7 +65,7 @@ public class WordService {
     public Optional<Word> update(@NonNull UUID uid, @NonNull WordDto dto) {
         Optional<Word> currentWord = findByUid(uid);
         if (currentWord.isEmpty()) {
-            throw new EntityNotFoundException("current word is null with uid " + uid);
+            throw new EntityNotFoundException("слово не существует по uid: " + uid);
         }
 
         Optional<Long> categoryIdOp = categoryRepository.findIdByUid(dto.getCategoryUid());
