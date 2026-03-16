@@ -2,7 +2,10 @@ package com.mulikoo.englearnapp.controller;
 
 import com.mulikoo.englearnapp.dto.CategoryDto;
 import com.mulikoo.englearnapp.entity.Category;
+import com.mulikoo.englearnapp.entity.Word;
+import com.mulikoo.englearnapp.enums.CategorySortField;
 import com.mulikoo.englearnapp.mapper.CategoryMapper;
+import com.mulikoo.englearnapp.repository.CategoryRepository;
 import com.mulikoo.englearnapp.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -10,6 +13,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -28,6 +35,7 @@ public class CategoryController {
 
     private final CategoryMapper categoryMapper;
     private final CategoryService categoryService;
+    private final CategoryRepository categoryRepository;
 
     @GetMapping("/{uid}")
     @Operation(summary = "Получение категории по uid", description = "Возвращает категорию")
@@ -39,6 +47,23 @@ public class CategoryController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(categoryMapper.toDto(result.get()));
+    }
+
+    @GetMapping
+    @Operation(summary = "Получение списка категорий", description = "Возвращает список категорий")
+    public ResponseEntity<Page<CategoryDto>> getAllCategory(@RequestParam(name = "page", defaultValue = "0") int page,
+                                                            @RequestParam(name = "size", defaultValue = "10") int size,
+                                                            @RequestParam(name = "sortField", defaultValue = "NAME") CategorySortField categorySortField,
+                                                            @RequestParam(name = "sortDirection", defaultValue = "ASC") Sort.Direction sortDirection
+    ) {
+        log.info("попытка получения списка категорий");
+
+        Sort sort = Sort.by(sortDirection, categorySortField.getFieldName());
+
+        Page<Category> categoryPage = categoryRepository.findAll(PageRequest.of(page, size, sort));
+        Page<CategoryDto> categoryDtoPage = categoryPage.map(categoryMapper::toDto);
+
+        return ResponseEntity.ok(categoryDtoPage);
     }
 
     @PostMapping
