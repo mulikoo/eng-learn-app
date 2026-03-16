@@ -63,74 +63,71 @@ CREATE TABLE category
 
 -- Связи
 ALTER TABLE word
-    drop constraint if exists fk_word_category,
-    ADD CONSTRAINT fk_word_category
-        FOREIGN KEY (category_id) REFERENCES Category (id) ON DELETE SET NULL;
+drop constraint if exists fk_word_category,
+ADD CONSTRAINT fk_word_category
+FOREIGN KEY (category_id) REFERENCES Category(id) ON DELETE SET NULL;
 
 alter table word_attachment
-    drop constraint if exists fk_word_attachment_word,
+drop constraint if exists fk_word_attachment_word,
     add constraint fk_word_attachment_word
         foreign key (word_id)
-            references word (id)
-            on delete cascade;
+        references word (id)
+        on delete cascade;
 
 alter table word_attachment
-    drop constraint if exists fk_word_attachment_attachment,
+drop constraint if exists fk_word_attachment_attachment,
     add constraint fk_word_attachment_attachment
         foreign key (attachment_id)
-            references attachment (id)
-            on delete cascade;
+        references attachment (id)
+        on delete cascade;
 
 alter table users
-    drop constraint if exists fk_users_current_category,
+drop constraint if exists fk_users_current_category,
     add constraint fk_users_current_category
         foreign key (current_category_id)
-            references category (id)
-            on delete set null;
+        references category (id)
+        on delete set null;
 
 alter table user_progress
-    drop constraint if exists fk_user_progress_user,
+drop constraint if exists fk_user_progress_user,
     add constraint fk_user_progress_user
         foreign key (user_id)
-            references users (id)
-            on delete cascade;
+        references users (id)
+        on delete cascade;
 
 alter table user_progress
-    drop constraint if exists fk_user_progress_word,
+drop constraint if exists fk_user_progress_word,
     add constraint fk_user_progress_word
         foreign key (word_id)
-            references word (id)
-            on delete cascade;
+        references word (id)
+        on delete cascade;
 
 -- unique констрайнты
 alter table word
-    drop constraint if exists uq_word_name_translation,
-    add constraint uq_word_name_translation
-        unique (name, translation);
+drop constraint if exists uq_word_name_translation,
+add constraint uq_word_name_translation
+     unique (name, translation);
 
 alter table word_attachment
-    drop constraint if exists uq_word_attachment_word_id_attachment_id,
+drop constraint if exists uq_word_attachment_word_id_attachment_id,
     add constraint uq_word_attachment_word_id_attachment_id
         unique (word_id, attachment_id);
 
 alter table user_progress
-    drop constraint if exists uq_user_progress_user_id_word_id,
+drop constraint if exists uq_user_progress_user_id_word_id,
     add constraint uq_user_progress_user_id_word_id
         unique (user_id, word_id);
 
 -- индексы
 create index idx_word_word on word (name);
-create index idx_word_creation_data on word (creation_date);
 create index idx_word_translation on word (translation);
-create index idx_word_category_id on word (category_id);
+create index idx_word_category_id on word(category_id);
 create index idx_word_attachment_word_id on word_attachment (word_id);
 create index idx_word_attachment_attachment_id on word_attachment (attachment_id);
 create index idx_attachment_file_url on attachment (file_url);
 create index idx_attachment_media_type on attachment (media_type);
 create index idx_users_username on users (username);
-create index idx_users__creation_data on users (creation_date);
 create index idx_users_current_category_id on users (current_category_id);
 create index idx_user_progress_user_id on user_progress (user_id);
 create index idx_user_progress_word_id on user_progress (word_id);
 create index idx_category_name on category (name);
-create index idx_category_creation_date on category (creation_date);

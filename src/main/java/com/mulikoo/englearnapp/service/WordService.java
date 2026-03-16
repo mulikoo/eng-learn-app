@@ -10,6 +10,8 @@ import com.mulikoo.englearnapp.repository.WordRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -93,5 +95,9 @@ public class WordService {
             return;
         }
         wordRepository.deleteByUid(uid);
+    }
+
+    public Page<Word> findAll(Pageable pageable) {
+        return wordRepository.findAll(pageable);
     }
 }

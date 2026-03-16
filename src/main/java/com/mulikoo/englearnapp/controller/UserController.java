@@ -4,17 +4,16 @@ import com.mulikoo.englearnapp.dto.UserDto;
 import com.mulikoo.englearnapp.entity.User;
 import com.mulikoo.englearnapp.enums.UserSortField;
 import com.mulikoo.englearnapp.mapper.UserMapper;
-import com.mulikoo.englearnapp.repository.UserRepository;
 import com.mulikoo.englearnapp.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +33,6 @@ public class UserController {
 
     private final UserMapper userMapper;
     private final UserService userService;
-    private final UserRepository userRepository;
 
     @GetMapping("/{uid}")
     @Operation(summary = "Получение пользователя по uid", description = "Возвращает пользователя")
@@ -50,15 +48,15 @@ public class UserController {
 
     @GetMapping
     @Operation(summary = "Получение списка пользователей", description = "Возвращает список пользователей")
-    public ResponseEntity<Page<UserDto>> getAllUser(@RequestParam(name = "page", defaultValue = "0") int page,
-                                                    @RequestParam(name = "size", defaultValue = "10") int size,
+    public ResponseEntity<Page<UserDto>> getAllUser(@RequestParam(name = "page", defaultValue = "0") @Min(0) int page,
+                                                    @RequestParam(name = "size", defaultValue = "10") @Min(1) int size,
                                                     @RequestParam(name = "sortField", defaultValue = "USER_NAME") UserSortField userSortField,
                                                     @RequestParam(name = "sortDirection", defaultValue = "ASC") Sort.Direction sortDirection) {
         log.info("попытка получения списка пользователей");
 
         Sort sort = Sort.by(sortDirection, userSortField.getFieldName());
 
-        Page<User> userPage = userRepository.findAll(PageRequest.of(page, size, sort));
+        Page<User> userPage = userService.findAll(PageRequest.of(page, size, sort));
         Page<UserDto> userDtoPage = userPage.map(userMapper::toDto);
 
         return ResponseEntity.ok(userDtoPage);
