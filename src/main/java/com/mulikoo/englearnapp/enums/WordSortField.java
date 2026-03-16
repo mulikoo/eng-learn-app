@@ -5,7 +5,8 @@ import lombok.Getter;
 public enum WordSortField {
 
     NAME("name"),
-    CREATION_DATE("creationDate")
+    CREATION_DATE("creationDate"),
+    TRANSLATION ("translation")
     ;
 
     @Getter
