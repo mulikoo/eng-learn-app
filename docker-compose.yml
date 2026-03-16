@@ -1,5 +1,12 @@
 
 services:
+  app:
+    build: .
+    container_name: eng-learn-app
+    ports:
+      - "8080:8080"
+    depends_on:
+     - postgres
   postgres:
     image: postgres:18
     container_name: eng_learn_postgres
