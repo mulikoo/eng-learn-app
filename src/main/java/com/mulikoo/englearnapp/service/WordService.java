@@ -3,6 +3,7 @@ package com.mulikoo.englearnapp.service;
 import com.mulikoo.englearnapp.dto.WordDto;
 import com.mulikoo.englearnapp.entity.Category;
 import com.mulikoo.englearnapp.entity.Word;
+import com.mulikoo.englearnapp.enums.WordSortField;
 import com.mulikoo.englearnapp.exceptions.EntityAlreadyExistsException;
 import com.mulikoo.englearnapp.exceptions.EntityNotFoundException;
 import com.mulikoo.englearnapp.repository.CategoryRepository;
@@ -11,7 +12,9 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +43,7 @@ public class WordService {
     @Transactional
     public Optional<Word> create(@NonNull WordDto dto) {
 
-        if(wordRepository.existsByNameAndTranslation(dto.getName(), dto.getTranslation())){
+        if (wordRepository.existsByNameAndTranslation(dto.getName(), dto.getTranslation())) {
             throw new EntityAlreadyExistsException("word уже существует");
         }
 
@@ -97,7 +100,9 @@ public class WordService {
         wordRepository.deleteByUid(uid);
     }
 
-    public Page<Word> findAll(Pageable pageable) {
-        return wordRepository.findAll(pageable);
+    public Page<Word> findAll(int page, int size, WordSortField wordSortField, Sort.Direction sortDirection) {
+        Sort sort = Sort.by(sortDirection, wordSortField.getFieldName());
+
+        return wordRepository.findAll(PageRequest.of(page, size, sort));
     }
 }

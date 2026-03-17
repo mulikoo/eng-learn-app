@@ -13,7 +13,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,9 +53,7 @@ public class UserController {
                                                     @RequestParam(name = "sortDirection", defaultValue = "ASC") Sort.Direction sortDirection) {
         log.info("попытка получения списка пользователей");
 
-        Sort sort = Sort.by(sortDirection, userSortField.getFieldName());
-
-        Page<User> userPage = userService.findAll(PageRequest.of(page, size, sort));
+        Page<User> userPage = userService.findAll(page, size, userSortField, sortDirection);
         Page<UserDto> userDtoPage = userPage.map(userMapper::toDto);
 
         return ResponseEntity.ok(userDtoPage);
