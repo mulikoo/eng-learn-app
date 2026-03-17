@@ -13,7 +13,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,9 +54,7 @@ public class CategoryController {
     ) {
         log.info("попытка получения списка категорий");
 
-        Sort sort = Sort.by(sortDirection, categorySortField.getFieldName());
-
-        Page<Category> categoryPage = categoryService.findAll(PageRequest.of(page, size, sort));
+        Page<Category> categoryPage = categoryService.findAll(page, size, categorySortField, sortDirection);
         Page<CategoryDto> categoryDtoPage = categoryPage.map(categoryMapper::toDto);
 
         return ResponseEntity.ok(categoryDtoPage);

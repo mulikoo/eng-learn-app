@@ -55,9 +55,7 @@ public class WordController {
                                                     @RequestParam(name = "sortDirection", defaultValue = "ASC") Sort.Direction sortDirection) {
         log.info("Попытка получения списка слов");
 
-        Sort sort = Sort.by(sortDirection, sortField.getFieldName());
-
-        Page<Word> wordPage = wordService.findAll(PageRequest.of(page, size, sort));
+        Page<Word> wordPage = wordService.findAll(page, size, sortField, sortDirection);
         Page<WordDto> wordDtoPage = wordPage.map(wordMapper::toDto);
 
         return ResponseEntity.ok(wordDtoPage);

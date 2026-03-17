@@ -2,6 +2,7 @@ package com.mulikoo.englearnapp.service;
 
 import com.mulikoo.englearnapp.dto.UserDto;
 import com.mulikoo.englearnapp.entity.User;
+import com.mulikoo.englearnapp.enums.UserSortField;
 import com.mulikoo.englearnapp.exceptions.EntityAlreadyExistsException;
 import com.mulikoo.englearnapp.exceptions.EntityNotFoundException;
 import com.mulikoo.englearnapp.repository.CategoryRepository;
@@ -10,7 +11,9 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -94,7 +97,9 @@ public class UserService {
         userRepository.deleteByUid(uid);
     }
 
-    public Page<User> findAll(Pageable pageable) {
-        return userRepository.findAll(pageable);
+    public Page<User> findAll(int page, int size, UserSortField userSortField, Sort.Direction sortDirection) {
+        Sort sort = Sort.by(sortDirection, userSortField.getFieldName());
+
+        return userRepository.findAll(PageRequest.of(page, size, sort));
     }
 }
