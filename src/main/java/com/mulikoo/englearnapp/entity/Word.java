@@ -1,26 +1,27 @@
 package com.mulikoo.englearnapp.entity;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
 
 
 @Getter
 @Setter
+@Entity
 @Table(name = "word")
 public class Word extends BaseEntity {
 
-    @Column("name")
+    @Column(name = "name")
     private String name;
 
-    @Column("translation")
+    @Column(name = "translation")
     private String translation;
 
-    @Column("clue")
+    @Column(name = "clue")
     private String clue;
 
-    @Column("category_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", unique = true, nullable = false)
     private Long categoryId;
 
 }

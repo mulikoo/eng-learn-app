@@ -1,18 +1,22 @@
 package com.mulikoo.englearnapp.entity;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
 
 @Getter
 @Setter
+@Entity
 @Table(name = "word_attachment")
 public class WordAttachment extends CoreEntity {
 
-    @Column("word_id")
-    private Long wordId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "word_id", referencedColumnName = "id")
+    @Size(min = 2, max = 45)
+    private Word word;
 
-    @Column("attachment_id")
-    private Long attachmentId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "attachment_id", referencedColumnName = "id")
+    private Attachment attachment;
 }
