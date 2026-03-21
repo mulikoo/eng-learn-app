@@ -1,19 +1,22 @@
 package com.mulikoo.englearnapp.entity;
 
-import lombok.*;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Getter
 @Setter
+@Entity
 @Table(name = "category")
 public class Category extends BaseEntity {
 
-    @Column("name")
+    @Column(name = "name")
     private String name;
 
-    @Column("description")
+    @Column(name = "description")
     private String description;
 
 }

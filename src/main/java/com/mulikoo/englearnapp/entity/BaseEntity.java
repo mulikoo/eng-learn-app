@@ -1,23 +1,25 @@
 package com.mulikoo.englearnapp.entity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.relational.core.mapping.Column;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
 @Setter
+@MappedSuperclass
 public abstract class BaseEntity extends CoreEntity {
 
-    @Column("uid")
+    @Column(name = "uid")
     protected UUID uid;
 
-    @Column("creation_date")
+    @Column(name = "creation_date")
     protected LocalDateTime creationDate;
 
-    @Column("modification_date")
+    @Column(name = "modification_date")
     protected LocalDateTime modificationDate;
 
 }

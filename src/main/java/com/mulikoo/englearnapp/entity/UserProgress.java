@@ -1,31 +1,33 @@
 package com.mulikoo.englearnapp.entity;
 
 import com.mulikoo.englearnapp.enums.ClueType;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.Set;
 
 @Getter
 @Setter
-@Table("user_progress")
+@Entity
+@Table(name = "user_progress")
 public class UserProgress extends BaseEntity {
 
-    @Column("user_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", unique = true, nullable = false)
     private Long userId;
 
-    @Column("status")
+    @Column(name = "status", nullable = false)
     private String status;
 
-    @Column("word_id")
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "word_id", unique = true ,nullable = false)
     private Long wordId;
 
-    @Column("attempt_counter")
+    @Column(name = "attempt_counter", nullable = false)
     private int attemptCounter;
 
-    @Column("user_clue_types")
+    @Column(name = "user_clue_types", nullable = false)
     private Set<ClueType> userClueTypes;
 
 }
