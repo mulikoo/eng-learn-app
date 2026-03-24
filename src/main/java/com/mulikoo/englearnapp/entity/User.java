@@ -8,13 +8,12 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "users")
-public class User extends BaseEntity{
+public class User extends BaseEntity {
 
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "current_category_id", unique = true, nullable = false)
-    private Long currentCategoryId;
-
+    @JoinColumn(name = "current_category_id", nullable = false)
+    private Category currentCategory;
 }

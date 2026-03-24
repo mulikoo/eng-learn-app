@@ -4,7 +4,7 @@ import lombok.Getter;
 
 public enum UserSortField {
 
-    USER_NAME("userName"),
+    USER_NAME("username"),
     CREATION_DATE("creationDate")
     ;
 

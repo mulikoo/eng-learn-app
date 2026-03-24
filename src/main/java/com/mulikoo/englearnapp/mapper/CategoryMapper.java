@@ -20,22 +20,13 @@ public abstract class CategoryMapper {
 
     public abstract Category toEntity(CategoryDto categoryDto);
 
-    @Named("CategoryIdToUid")
-    protected UUID categoryIdToUid(Long categoryId) {
-        if (categoryId == null) {
-            return null;
-        }
-        return categoryRepository.findUidById(categoryId)
-                .orElse(null);
-    }
-
-    @Named("CategoryUidToId")
-    protected Long categoryUidToId(UUID categoryUid) {
+    @Named("CategoryUidToCategory")
+    protected Category categoryUidToId(UUID categoryUid) {
         if (categoryUid == null) {
             return null;
         }
 
-        return categoryRepository.findIdByUid(categoryUid)
+        return categoryRepository.findByUid(categoryUid)
                 .orElse(null);
     }
 }

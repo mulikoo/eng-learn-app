@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -47,11 +46,8 @@ public class WordService {
             throw new EntityAlreadyExistsException("word уже существует");
         }
 
-        Optional<Category> category = categoryRepository.findByUid(dto.getCategoryUid());
-
-        if (category.isEmpty()) {
-            throw new EntityNotFoundException("Category Not Found");
-        }
+        Category category = categoryRepository.findByUid(dto.getCategoryUid())
+                .orElseThrow(() -> new EntityNotFoundException("Category Not Found"));
 
         Word word = new Word();
 
@@ -59,33 +55,28 @@ public class WordService {
         word.setName(dto.getName());
         word.setClue(dto.getClue());
         word.setTranslation(dto.getTranslation());
-        word.setCategoryId(category.get().getId());
-        word.setCreationDate(LocalDateTime.now());
-        word.setModificationDate(LocalDateTime.now());
+        word.setCategory(category);
 
         return Optional.of(wordRepository.save(word));
     }
 
     @Transactional
     public Optional<Word> update(@NonNull UUID uid, @NonNull WordDto dto) {
+
         Optional<Word> currentWord = findByUid(uid);
         if (currentWord.isEmpty()) {
             throw new EntityNotFoundException("слово не существует по uid: " + uid);
         }
 
-        Optional<Long> categoryIdOp = categoryRepository.findIdByUid(dto.getCategoryUid());
-
-        if (categoryIdOp.isEmpty()) {
-            throw new EntityNotFoundException("Category Not Found with uid: " + dto.getCategoryUid());
-        }
+        Category category = categoryRepository.findByUid(dto.getCategoryUid())
+                .orElseThrow(() -> new EntityNotFoundException("Category Not Found with uid: " + dto.getCategoryUid()));
 
         return currentWord
                 .map(word -> {
                     word.setName(dto.getName());
                     word.setClue(dto.getClue());
                     word.setTranslation(dto.getTranslation());
-                    word.setCategoryId(categoryIdOp.get());
-                    word.setModificationDate(LocalDateTime.now());
+                    word.setCategory(category);
                     return wordRepository.save(word);
                 });
     }

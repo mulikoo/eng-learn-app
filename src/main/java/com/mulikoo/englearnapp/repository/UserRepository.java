@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long>, PagingAndSortingRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long>{
     Optional<User> findByUid(UUID uid);
 
     void deleteByUid(UUID uid);
