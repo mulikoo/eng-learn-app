@@ -49,8 +49,6 @@ public class CategoryService {
         category.setUid(UUID.randomUUID());
         category.setName(categoryDto.getName());
         category.setDescription(categoryDto.getDescription());
-        category.setCreationDate(LocalDateTime.now());
-        category.setModificationDate(LocalDateTime.now());
 
         return Optional.of(categoryRepository.save(category));
     }
@@ -67,7 +65,6 @@ public class CategoryService {
                 .map(category -> {
                     category.setName(categoryDto.getName());
                     category.setDescription(categoryDto.getDescription());
-                    category.setModificationDate(LocalDateTime.now());
                     return categoryRepository.save(category);
                 });
     }

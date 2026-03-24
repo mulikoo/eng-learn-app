@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface WordRepository extends JpaRepository<Word, Long>, PagingAndSortingRepository<Word, Long>{
+public interface WordRepository extends JpaRepository<Word, Long>{
 
     Optional<Word> findByUid(UUID uid);
 

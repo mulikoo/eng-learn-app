@@ -1,6 +1,7 @@
 package com.mulikoo.englearnapp.service;
 
 import com.mulikoo.englearnapp.dto.UserDto;
+import com.mulikoo.englearnapp.entity.Category;
 import com.mulikoo.englearnapp.entity.User;
 import com.mulikoo.englearnapp.enums.UserSortField;
 import com.mulikoo.englearnapp.exceptions.EntityAlreadyExistsException;
@@ -12,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -46,19 +46,16 @@ public class UserService {
             throw new EntityAlreadyExistsException("user already exists");
         }
 
-        Optional<Long> categoryIdOp = categoryRepository.findIdByName(DEFAULT_CATEGORY_NAME);
+        Long categoryId = categoryRepository.findIdByName(DEFAULT_CATEGORY_NAME)
+                .orElseThrow(() -> new EntityNotFoundException("Не найдена дефолтная категория"));
 
-        if (categoryIdOp.isEmpty()) {
-            throw new EntityNotFoundException("Не найдена дефолтная категория");
-        }
+        Category category = categoryRepository.getReferenceById(categoryId);
 
         User user = new User();
 
         user.setUid(UUID.randomUUID());
         user.setUsername(dto.getUsername());
-        user.setCurrentCategoryId(categoryIdOp.get());
-        user.setCreationDate(LocalDateTime.now());
-        user.setModificationDate(LocalDateTime.now());
+        user.setCurrentCategory(category);
 
         return Optional.of(userRepository.save(user));
 
@@ -71,17 +68,15 @@ public class UserService {
             throw new EntityNotFoundException("user not found by uid: " + uid);
         }
 
-        Optional<Long> categoryIdOp = categoryRepository.findIdByUid(userDto.getCurrentCategoryUid());
+        Long categoryId = categoryRepository.findIdByUid(userDto.getCurrentCategoryUid())
+                .orElseThrow(() -> new EntityNotFoundException("Category Not Found with uid: " + userDto.getCurrentCategoryUid()));
 
-        if (categoryIdOp.isEmpty()) {
-            throw new EntityNotFoundException("Category Not Found with uid: " + userDto.getCurrentCategoryUid());
-        }
+        Category category = categoryRepository.getReferenceById(categoryId);
 
         return currentUser
                 .map(user -> {
                     user.setUsername(userDto.getUsername());
-                    user.setCurrentCategoryId(categoryIdOp.get());
-                    user.setModificationDate(LocalDateTime.now());
+                    user.setCurrentCategory(category);
                     return userRepository.save(user);
                 });
 

@@ -9,9 +9,11 @@ import org.mapstruct.MappingConstants;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {CategoryMapper.class})
 public interface WordMapper {
 
-    @Mapping(target = "categoryUid", source = "categoryId", qualifiedByName = "CategoryIdToUid")
+    @Mapping(target = "categoryUid", source = "category.uid")
     WordDto toDto(Word word);
 
-    @Mapping(target = "categoryId", source = "categoryUid", qualifiedByName = "CategoryUidToId")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "attachments", ignore = true)
+    @Mapping(target = "category", source = "categoryUid", qualifiedByName = "CategoryUidToCategory")
     Word toEntity(WordDto wordDto);
 }

@@ -13,9 +13,9 @@ import lombok.Setter;
 @Table(name = "attachment")
 public class Attachment extends BaseEntity {
 
-    @Column(name = "file_url")
+    @Column(name = "file_url", unique = true, nullable = false)
     private String fileUrl;
 
-    @Column(name = "media_type")
+    @Column(name = "media_type", nullable = false)
     private MediaType mediaType;
 }

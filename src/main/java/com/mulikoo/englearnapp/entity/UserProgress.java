@@ -13,21 +13,21 @@ import java.util.Set;
 @Table(name = "user_progress")
 public class UserProgress extends BaseEntity {
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", unique = true, nullable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(name = "status", nullable = false)
+    @Column(name = "status")
     private String status;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "word_id", unique = true ,nullable = false)
-    private Long wordId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "word_id", nullable = false)
+    private Word word;
 
     @Column(name = "attempt_counter", nullable = false)
     private int attemptCounter;
 
-    @Column(name = "user_clue_types", nullable = false)
+    @Column(name = "user_clue_types")
     private Set<ClueType> userClueTypes;
 
 }
