@@ -7,6 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@NamedEntityGraph(name = "User.userAndCurrentCategory", attributeNodes = {
+        @NamedAttributeNode("currentCategory")
+})
 @Table(name = "users")
 public class User extends BaseEntity {
 

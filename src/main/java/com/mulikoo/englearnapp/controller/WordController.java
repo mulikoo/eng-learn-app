@@ -13,13 +13,13 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -59,6 +59,20 @@ public class WordController {
         Page<WordDto> wordDtoPage = wordPage.map(wordMapper::toDto);
 
         return ResponseEntity.ok(wordDtoPage);
+    }
+
+    @GetMapping("/next/{username}")
+    @Operation(summary = "Получение неизученного слова",
+            description = "Получает следующее неизученное слово и регистрирует его отправку")
+    public ResponseEntity<WordDto> getNextWord(@PathVariable String username) {
+        log.info("Попытка получения неизученного слова для пользователя: {}", username);
+
+        Optional<Word> nextWord = wordService.findNextWord(username);
+        if (nextWord.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(wordMapper.toDto(nextWord.get()));
     }
 
     @PostMapping

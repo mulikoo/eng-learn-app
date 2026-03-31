@@ -2,6 +2,7 @@ package com.mulikoo.englearnapp.service;
 
 import com.mulikoo.englearnapp.dto.WordDto;
 import com.mulikoo.englearnapp.entity.Category;
+import com.mulikoo.englearnapp.entity.User;
 import com.mulikoo.englearnapp.entity.Word;
 import com.mulikoo.englearnapp.enums.WordSortField;
 import com.mulikoo.englearnapp.exceptions.EntityAlreadyExistsException;
@@ -18,7 +19,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,6 +30,8 @@ public class WordService {
 
     private final WordRepository wordRepository;
     private final CategoryRepository categoryRepository;
+    private final UserService userService;
+    private final UserProgressService userProgressService;
 
     public Optional<Word> findByUid(@Nullable UUID uid) {
         if (uid == null) {
@@ -96,4 +99,19 @@ public class WordService {
 
         return wordRepository.findAll(PageRequest.of(page, size, sort));
     }
+
+    @Transactional(readOnly = true)
+    public Optional<Word> findNextWord(@NonNull String username) {
+        User user = userService.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + username));
+
+        List<Long> learnedWordIdList = userProgressService.findWordIdsByUser(user);
+
+        Optional<Word> wordOp = wordRepository.findNextByUserCategory(user.getCurrentCategory(), learnedWordIdList);
+
+        wordOp.ifPresent(word -> userProgressService.registerUserProgress(user, word));
+
+        return wordOp;
+    }
+
 }

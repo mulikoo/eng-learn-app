@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.jpa.repository.EntityGraph;
 
 import java.util.List;
 
@@ -12,6 +13,11 @@ import java.util.List;
 @Setter
 @Entity
 @ToString(exclude = {"category", "attachments"})
+@NamedEntityGraph(
+        name = "Word.withCategory",
+        attributeNodes = {@NamedAttributeNode("category")}
+
+)
 @Table(name = "word",
         uniqueConstraints = @UniqueConstraint(columnNames = {"name", "translation"}, name = "uq_word_name_translation"))
 public class Word extends BaseEntity {

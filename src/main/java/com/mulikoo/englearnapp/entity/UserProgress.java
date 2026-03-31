@@ -1,6 +1,7 @@
 package com.mulikoo.englearnapp.entity;
 
 import com.mulikoo.englearnapp.enums.ClueType;
+import com.mulikoo.englearnapp.enums.UserProgressStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,8 +18,9 @@ public class UserProgress extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private UserProgressStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "word_id", nullable = false)

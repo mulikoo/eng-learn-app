@@ -1,9 +1,7 @@
 package com.mulikoo.englearnapp.entity;
 
 import com.mulikoo.englearnapp.enums.MediaType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +14,7 @@ public class Attachment extends BaseEntity {
     @Column(name = "file_url", unique = true, nullable = false)
     private String fileUrl;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "media_type", nullable = false)
     private MediaType mediaType;
 }
