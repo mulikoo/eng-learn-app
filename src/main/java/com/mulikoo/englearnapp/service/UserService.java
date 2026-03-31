@@ -18,7 +18,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -39,6 +38,14 @@ public class UserService {
         return userRepository.findByUid(uid);
     }
 
+    public Optional<User> findByUsername(@Nullable String username) {
+        if (username == null) {
+            log.info("username is null");
+            return Optional.empty();
+        }
+        return userRepository.findByUsername(username);
+    }
+
     @Transactional
     public Optional<User> create(@NonNull UserDto dto) {
 
@@ -46,10 +53,8 @@ public class UserService {
             throw new EntityAlreadyExistsException("user already exists");
         }
 
-        Long categoryId = categoryRepository.findIdByName(DEFAULT_CATEGORY_NAME)
+        Category category = categoryRepository.findByName(DEFAULT_CATEGORY_NAME)
                 .orElseThrow(() -> new EntityNotFoundException("Не найдена дефолтная категория"));
-
-        Category category = categoryRepository.getReferenceById(categoryId);
 
         User user = new User();
 
