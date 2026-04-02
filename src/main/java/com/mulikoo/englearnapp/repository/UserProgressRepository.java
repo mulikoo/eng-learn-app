@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface UserProgressRepository extends JpaRepository<UserProgress, Long> {
     Optional<UserProgress> findByUser(User user);
@@ -16,4 +17,6 @@ public interface UserProgressRepository extends JpaRepository<UserProgress, Long
     @Query("SELECT up.word.id FROM UserProgress up WHERE up.user = :user")
     List<Long> findWordIdsByUser(@Param("user") User user);
 
+    @Query("SELECT up FROM UserProgress up WHERE up.word.uid = :wordUid AND up.user.username = :username")
+    Optional<UserProgress> findByWordUidAndUsername(@Param("wordUid") UUID wordUid, @Param("username") String username);
 }

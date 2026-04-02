@@ -35,4 +35,7 @@ public interface WordRepository extends JpaRepository<Word, Long> {
     @Override
     @EntityGraph(value = "Word.withCategory")
     Page<Word> findAll(Pageable pageable);
+
+    @Query("SELECT w.translation FROM Word w WHERE w.uid = :uid")
+    Optional<String> findTranslationByUid(@Param("uid") UUID uid);
 }

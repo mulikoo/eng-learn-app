@@ -1,9 +1,12 @@
 package com.mulikoo.englearnapp.controller;
 
 import com.mulikoo.englearnapp.dto.WordDto;
+import com.mulikoo.englearnapp.entity.User;
+import com.mulikoo.englearnapp.entity.UserProgress;
 import com.mulikoo.englearnapp.entity.Word;
 import com.mulikoo.englearnapp.enums.WordSortField;
 import com.mulikoo.englearnapp.mapper.WordMapper;
+import com.mulikoo.englearnapp.service.UserProgressService;
 import com.mulikoo.englearnapp.service.WordService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -73,6 +76,20 @@ public class WordController {
         }
 
         return ResponseEntity.ok(wordMapper.toDto(nextWord.get()));
+    }
+
+    @GetMapping("/checkTranslation")
+    @Operation(summary = "Проверка перевода слова",
+            description = "Получает перевод от пользователя и сравнивает с фактическим переводом")
+    public ResponseEntity<Boolean> comparisonTranslation(@RequestParam("uid") UUID uid,
+                                                         @RequestParam("translation") String translation,
+                                                         @RequestParam("username") String username) {
+        log.info("Проверка перевода от пользователя: {}", username);
+
+        boolean isCorrect = wordService.isTranslationCorrect(uid, translation, username);
+
+        return ResponseEntity.ok(isCorrect);
+
     }
 
     @PostMapping
