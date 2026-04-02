@@ -5,6 +5,7 @@ import com.mulikoo.englearnapp.entity.Category;
 import com.mulikoo.englearnapp.entity.User;
 import com.mulikoo.englearnapp.entity.Word;
 import com.mulikoo.englearnapp.enums.WordSortField;
+import com.mulikoo.englearnapp.exceptions.AttemptCounterException;
 import com.mulikoo.englearnapp.exceptions.EntityAlreadyExistsException;
 import com.mulikoo.englearnapp.exceptions.EntityNotFoundException;
 import com.mulikoo.englearnapp.repository.CategoryRepository;
@@ -114,4 +115,21 @@ public class WordService {
         return wordOp;
     }
 
+    /**
+     * проверяет корректность перевода
+     *
+     * @param uid uid слова
+     * @param translation предполагаемый перевод слова
+     * @param username юзернейм пользователя
+     * @return true - правильный перевод, false - не правильный перевод
+     */
+    @Transactional(noRollbackFor = AttemptCounterException.class)
+    public boolean isTranslationCorrect(@NonNull UUID uid, @NonNull String translation, @NonNull String username) {
+        String actualTranslation = wordRepository.findTranslationByUid(uid)
+                .orElseThrow(() -> new EntityNotFoundException("Word mot found" + uid));
+
+        boolean isCorrect = actualTranslation.equalsIgnoreCase(translation);
+        userProgressService.updateProgress(uid, username, isCorrect);
+        return isCorrect;
+    }
 }

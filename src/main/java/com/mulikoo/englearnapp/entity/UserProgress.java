@@ -29,7 +29,7 @@ public class UserProgress extends BaseEntity {
     @Column(name = "attempt_counter", nullable = false)
     private int attemptCounter;
 
-    @Column(name = "user_clue_types")
+    @Column(name = "user_clue_types", columnDefinition = "TEXT")
     private Set<ClueType> userClueTypes;
 
 }
