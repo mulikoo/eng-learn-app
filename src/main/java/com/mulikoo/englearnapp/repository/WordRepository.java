@@ -38,4 +38,7 @@ public interface WordRepository extends JpaRepository<Word, Long> {
 
     @Query("SELECT w.translation FROM Word w WHERE w.uid = :uid")
     Optional<String> findTranslationByUid(@Param("uid") UUID uid);
+
+    @Query("SELECT w.clue FROM Word w WHERE w.uid = :uid")
+    Optional<String> findClueByUid(UUID uid);
 }

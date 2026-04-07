@@ -3,8 +3,10 @@ package com.mulikoo.englearnapp.enums;
 import lombok.Getter;
 
 public enum ClueType {
-    HINT("hint"),
-    TRANSLATION("translation");
+    PHOTO("photo"),
+    AUDIO("audio"),
+    TEXT("text"),
+    ;
 
     @Getter
     private final String description;

@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -87,4 +88,17 @@ public class UserProgressService {
 
         userProgressRepository.save(userProgress);
     }
+
+    /**
+     * Получение UserProgress по uid слова и username пользователя
+     *
+     * @param wordUid uid слова
+     * @param username юзернейм пользователя
+     * @return UserProgress
+     */
+    public Optional<UserProgress> getUserProgressByWordUid(@NonNull UUID wordUid, @NonNull String username) {
+
+        return userProgressRepository.findByWordUidAndUsername(wordUid, username);
+    }
+
 }

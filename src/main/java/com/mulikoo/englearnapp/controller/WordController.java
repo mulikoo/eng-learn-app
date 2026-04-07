@@ -1,12 +1,9 @@
 package com.mulikoo.englearnapp.controller;
 
 import com.mulikoo.englearnapp.dto.WordDto;
-import com.mulikoo.englearnapp.entity.User;
-import com.mulikoo.englearnapp.entity.UserProgress;
 import com.mulikoo.englearnapp.entity.Word;
 import com.mulikoo.englearnapp.enums.WordSortField;
 import com.mulikoo.englearnapp.mapper.WordMapper;
-import com.mulikoo.englearnapp.service.UserProgressService;
 import com.mulikoo.englearnapp.service.WordService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -90,6 +86,16 @@ public class WordController {
 
         return ResponseEntity.ok(isCorrect);
 
+    }
+
+    @GetMapping("/getClue")
+    @Operation(summary = "Текстовая подсказка для пользователя", description = "Получает подсказку по uid и username")
+    public ResponseEntity<String> getTextClue(@RequestParam("uid") UUID uid, @RequestParam("username") String username) {
+        log.info("Получение текстовой подсказки на uid слова и username");
+
+        String result = wordService.getClue(uid, username);
+
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping
