@@ -1,0 +1,1 @@
+UPDATE user_progress set user_clue_types = null where user_clue_types is not null
