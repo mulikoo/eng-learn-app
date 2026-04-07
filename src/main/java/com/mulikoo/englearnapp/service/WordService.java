@@ -3,12 +3,16 @@ package com.mulikoo.englearnapp.service;
 import com.mulikoo.englearnapp.dto.WordDto;
 import com.mulikoo.englearnapp.entity.Category;
 import com.mulikoo.englearnapp.entity.User;
+import com.mulikoo.englearnapp.entity.UserProgress;
 import com.mulikoo.englearnapp.entity.Word;
+import com.mulikoo.englearnapp.enums.ClueType;
 import com.mulikoo.englearnapp.enums.WordSortField;
 import com.mulikoo.englearnapp.exceptions.AttemptCounterException;
+import com.mulikoo.englearnapp.exceptions.ClueIsAlreadyUsedException;
 import com.mulikoo.englearnapp.exceptions.EntityAlreadyExistsException;
 import com.mulikoo.englearnapp.exceptions.EntityNotFoundException;
 import com.mulikoo.englearnapp.repository.CategoryRepository;
+import com.mulikoo.englearnapp.repository.UserProgressRepository;
 import com.mulikoo.englearnapp.repository.WordRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +23,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,6 +36,7 @@ public class WordService {
     private final CategoryRepository categoryRepository;
     private final UserService userService;
     private final UserProgressService userProgressService;
+    private final UserProgressRepository userProgressRepository;
 
     public Optional<Word> findByUid(@Nullable UUID uid) {
         if (uid == null) {
@@ -118,9 +122,9 @@ public class WordService {
     /**
      * проверяет корректность перевода
      *
-     * @param uid uid слова
+     * @param uid         uid слова
      * @param translation предполагаемый перевод слова
-     * @param username юзернейм пользователя
+     * @param username    юзернейм пользователя
      * @return true - правильный перевод, false - не правильный перевод
      */
     @Transactional(noRollbackFor = AttemptCounterException.class)
@@ -131,5 +135,29 @@ public class WordService {
         boolean isCorrect = actualTranslation.equalsIgnoreCase(translation);
         userProgressService.updateProgress(uid, username, isCorrect);
         return isCorrect;
+    }
+
+    @Transactional
+    public String getClue(@NonNull UUID wordUid, @NonNull String username) {
+
+        UserProgress userProgress = userProgressService.getUserProgressByWordUid(wordUid, username)
+                .orElseThrow(() -> new EntityNotFoundException(("Для пользователя '%s' и слова '%s' ещё не начато изучение"
+                        .formatted(username, wordUid)
+                )));
+
+        if (!CollectionUtils.isEmpty(userProgress.getUserClueTypes()) && userProgress.getUserClueTypes().contains(ClueType.TEXT)) {
+            throw new ClueIsAlreadyUsedException(("Подсказка для слова '%s' уже была запрошена".formatted(wordUid)));
+        }
+
+        String clueFromWord = wordRepository.findClueByUid(wordUid)
+                .orElseThrow(() -> new EntityNotFoundException(("подсказка для слова с uid '%s' не найдена".formatted(wordUid))));
+
+        if (userProgress.getUserClueTypes() != null) {
+            userProgress.getUserClueTypes().add(ClueType.TEXT);
+        } else {
+            userProgress.setUserClueTypes(new HashSet<>(Set.of(ClueType.TEXT)));
+        }
+
+        return clueFromWord;
     }
 }

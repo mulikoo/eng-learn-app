@@ -5,12 +5,14 @@ import com.mulikoo.englearnapp.enums.UserProgressStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.Set;
 
 @Getter
 @Setter
 @Entity
+@DynamicUpdate
 @Table(name = "user_progress")
 public class UserProgress extends BaseEntity {
 
