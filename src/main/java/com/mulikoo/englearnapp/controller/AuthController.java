@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RequestMapping("/auth/v1")
 @Validated
 @RequiredArgsConstructor
@@ -33,11 +35,11 @@ public class AuthController {
                                               @RequestParam(name = "password") String password) {
         log.info("создание нового пользователя. получили username{}", username);
 
-        User result = userService.create(username, password);
-        if (result == null) {
+        Optional<User> result = userService.create(username, password);
+        if (result.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(userMapper.toDto(result), HttpStatus.CREATED);
+        return new ResponseEntity<>(userMapper.toDto(result.get()), HttpStatus.CREATED);
     }
 }

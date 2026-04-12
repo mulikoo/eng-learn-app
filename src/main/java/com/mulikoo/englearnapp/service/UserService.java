@@ -49,7 +49,7 @@ public class UserService {
     }
 
     @Transactional
-    public User create(@NonNull String username, @NonNull String password) {
+    public Optional<User> create(@NonNull String username, @NonNull String password) {
 
         if (userRepository.findByUsername(username).isPresent()) {
             throw new EntityAlreadyExistsException("пользователь с таким username '%s' уже существует".formatted(username));
@@ -65,8 +65,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(password));
         user.setCurrentCategory(category);
 
-        return userRepository.save(user);
-
+        return Optional.of(userRepository.save(user));
     }
 
     @Transactional
