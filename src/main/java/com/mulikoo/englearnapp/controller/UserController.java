@@ -60,16 +60,17 @@ public class UserController {
     }
 
     @PostMapping
-    @Operation(summary = "Создание нового пользователя", description = "Создание нового пользователя по uid")
-    public ResponseEntity<UserDto> createUser(@Validated @RequestBody UserDto userDto) {
-        log.info("создание нового пользователя. получили username{}", userDto.getUsername());
+    @Operation(summary = "Создание нового пользователя", description = "Создание нового пользователя")
+    public ResponseEntity<UserDto> createUser(@RequestParam(name = "username") String username,
+                                              @RequestParam(name = "password") String password) {
+        log.info("создание нового пользователя. получили username{}", username);
 
-        Optional<User> result = userService.create(userDto);
-        if (result.isEmpty()) {
+        User result = userService.create(username, password);
+        if (result == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(userMapper.toDto(result.get()), HttpStatus.CREATED);
 
+        return new ResponseEntity<>(userMapper.toDto(result), HttpStatus.CREATED);
     }
 
     @PutMapping("/{uid}")

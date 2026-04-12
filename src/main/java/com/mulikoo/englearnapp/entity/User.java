@@ -19,4 +19,7 @@ public class User extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "current_category_id", nullable = false)
     private Category currentCategory;
+
+    @Column(name = "password")
+    private String password;
 }
