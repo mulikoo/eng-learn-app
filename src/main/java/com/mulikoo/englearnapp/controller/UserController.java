@@ -65,12 +65,12 @@ public class UserController {
                                               @RequestParam(name = "password") String password) {
         log.info("создание нового пользователя. получили username{}", username);
 
-        User result = userService.create(username, password);
-        if (result == null) {
+        Optional<User> result = userService.create(username, password);
+        if (result.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(userMapper.toDto(result), HttpStatus.CREATED);
+        return new ResponseEntity<>(userMapper.toDto(result.get()), HttpStatus.CREATED);
     }
 
     @PutMapping("/{uid}")
