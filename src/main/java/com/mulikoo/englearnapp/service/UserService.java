@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.lang.Nullable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public Optional<User> findByUid(@Nullable UUID uid) {
         if (uid == null) {
@@ -47,10 +49,10 @@ public class UserService {
     }
 
     @Transactional
-    public Optional<User> create(@NonNull UserDto dto) {
+    public User create(@NonNull String username, @NonNull String password) {
 
-        if (userRepository.existsByUsername(dto.getUsername())) {
-            throw new EntityAlreadyExistsException("user already exists");
+        if (userRepository.findByUsername(username).isPresent()) {
+            throw new EntityAlreadyExistsException("пользователь с таким username '%s' уже существует".formatted(username));
         }
 
         Category category = categoryRepository.findByName(DEFAULT_CATEGORY_NAME)
@@ -59,10 +61,11 @@ public class UserService {
         User user = new User();
 
         user.setUid(UUID.randomUUID());
-        user.setUsername(dto.getUsername());
+        user.setUsername(username);
+        user.setPassword(passwordEncoder.encode(password));
         user.setCurrentCategory(category);
 
-        return Optional.of(userRepository.save(user));
+        return userRepository.save(user);
 
     }
 
