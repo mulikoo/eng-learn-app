@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,7 @@ public class UserController {
     private final UserMapper userMapper;
     private final UserService userService;
 
+    @PreAuthorize("hasAuthority('USER_READ')")
     @GetMapping("/{uid}")
     @Operation(summary = "Получение пользователя по uid", description = "Возвращает пользователя")
     public ResponseEntity<UserDto> getUser(@Parameter(description = "uid пользвателя") @NotNull @PathVariable("uid") UUID uid) {
@@ -45,6 +47,7 @@ public class UserController {
         return ResponseEntity.ok(userMapper.toDto(result.get()));
     }
 
+    @PreAuthorize("hasAuthority('USER_READ')")
     @GetMapping
     @Operation(summary = "Получение списка пользователей", description = "Возвращает список пользователей")
     public ResponseEntity<Page<UserDto>> getAllUser(@RequestParam(name = "page", defaultValue = "0") @Min(0) int page,
@@ -59,6 +62,7 @@ public class UserController {
         return ResponseEntity.ok(userDtoPage);
     }
 
+    @PreAuthorize("hasAuthority('USER_CREATE')")
     @PostMapping
     @Operation(summary = "Создание нового пользователя", description = "Создание нового пользователя")
     public ResponseEntity<UserDto> createUser(@RequestParam(name = "username") String username,
@@ -73,6 +77,7 @@ public class UserController {
         return new ResponseEntity<>(userMapper.toDto(result.get()), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAuthority('USER_UPDATE')")
     @PutMapping("/{uid}")
     @Operation(summary = "Обновление пользователя", description = "Позволяет обновлять пользователя")
     public ResponseEntity<UserDto> updateUser(@Parameter(description = "uid пользователя")
@@ -87,6 +92,7 @@ public class UserController {
 
     }
 
+    @PreAuthorize("hasAuthority('USER_DELETE')")
     @DeleteMapping("/{uid}")
     @Operation(summary = "Удаление пользователя", description = "Позволяет удалять польхователя")
     public ResponseEntity<UserDto> deleteUser(@Parameter(description = "uid категории") @NotNull @PathVariable("uid") UUID uid) {

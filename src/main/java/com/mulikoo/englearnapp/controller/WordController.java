@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,7 @@ public class WordController {
     private final WordMapper wordMapper;
     private final WordService wordService;
 
+    @PreAuthorize("hasAuthority('WORD_READ')")
     @GetMapping("/{uid}")
     @Operation(summary = "Получение слова по uid", description = "Возвращает слово")
     public ResponseEntity<WordDto> getWord(@Parameter(description = "uid слова") @NotNull @PathVariable("uid") UUID uid) {
@@ -46,6 +48,7 @@ public class WordController {
         return ResponseEntity.ok(wordMapper.toDto(result.get()));
     }
 
+    @PreAuthorize("hasAuthority('WORD_READ')")
     @GetMapping
     @Operation(summary = "Получение списка слов", description = "Возвращает список слов")
     public ResponseEntity<Page<WordDto>> getAllWord(@RequestParam(name = "page", defaultValue = "0") @Min(0) int page,
@@ -60,6 +63,7 @@ public class WordController {
         return ResponseEntity.ok(wordDtoPage);
     }
 
+    @PreAuthorize("hasAuthority('WORD_LEARN')")
     @GetMapping("/next/{username}")
     @Operation(summary = "Получение неизученного слова",
             description = "Получает следующее неизученное слово и регистрирует его отправку")
@@ -74,6 +78,7 @@ public class WordController {
         return ResponseEntity.ok(wordMapper.toDto(nextWord.get()));
     }
 
+    @PreAuthorize("hasAuthority('WORD_LEARN')")
     @GetMapping("/checkTranslation")
     @Operation(summary = "Проверка перевода слова",
             description = "Получает перевод от пользователя и сравнивает с фактическим переводом")
@@ -88,6 +93,7 @@ public class WordController {
 
     }
 
+    @PreAuthorize("hasAuthority('WORD_LEARN')")
     @GetMapping("/getClue")
     @Operation(summary = "Текстовая подсказка для пользователя", description = "Получает подсказку по uid и username")
     public ResponseEntity<String> getTextClue(@RequestParam("uid") UUID uid, @RequestParam("username") String username) {
@@ -98,6 +104,7 @@ public class WordController {
         return ResponseEntity.ok(result);
     }
 
+    @PreAuthorize("hasAuthority('WORD_CREATE')")
     @PostMapping
     @Operation(summary = "Создание нового слова", description = "Создание нового слова по uid")
     public ResponseEntity<WordDto> createWord(@Validated @RequestBody WordDto wordDto) {
@@ -111,6 +118,7 @@ public class WordController {
         return new ResponseEntity<>(wordMapper.toDto(result.get()), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAuthority('WORD_UPDATE')")
     @PutMapping("/{uid}")
     @Operation(summary = "Обновление слова", description = "Позволяет обновлять слово")
     public ResponseEntity<WordDto> updateWord(@Parameter(description = "uid слова")
@@ -124,6 +132,7 @@ public class WordController {
         return ResponseEntity.ok(wordMapper.toDto(result.get()));
     }
 
+    @PreAuthorize("hasAuthority('WORD_DELETE')")
     @DeleteMapping("/{uid}")
     @Operation(summary = "Удаление слова", description = "Позволяет удалять слова")
     public ResponseEntity<WordDto> deleteWord(@Parameter(description = "uid категории") @NotNull @PathVariable("uid") UUID uid) {

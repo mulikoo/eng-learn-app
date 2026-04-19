@@ -10,6 +10,13 @@ import lombok.Setter;
 @NamedEntityGraph(name = "User.userAndCurrentCategory", attributeNodes = {
         @NamedAttributeNode("currentCategory")
 })
+@NamedEntityGraph(name = "User.withRoleAndPermissions", attributeNodes = {
+        @NamedAttributeNode(value = "role", subgraph = "role-subgraph")
+},subgraphs = {
+        @NamedSubgraph(name = "role-subgraph", attributeNodes = {
+                @NamedAttributeNode(value = "permissions")
+        })
+})
 @Table(name = "users")
 public class User extends BaseEntity {
 
@@ -22,4 +29,8 @@ public class User extends BaseEntity {
 
     @Column(name = "password")
     private String password;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 }

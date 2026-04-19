@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,7 @@ public class CategoryController {
     private final CategoryMapper categoryMapper;
     private final CategoryService categoryService;
 
+    @PreAuthorize("hasAuthority('CATEGORY_READ')")
     @GetMapping("/{uid}")
     @Operation(summary = "Получение категории по uid", description = "Возвращает категорию")
     public ResponseEntity<CategoryDto> getCategory(@Parameter(description = "uid категории") @NotNull @PathVariable("uid") UUID uid) {
@@ -45,6 +47,7 @@ public class CategoryController {
         return ResponseEntity.ok(categoryMapper.toDto(result.get()));
     }
 
+    @PreAuthorize("hasAuthority('CATEGORY_READ')")
     @GetMapping
     @Operation(summary = "Получение списка категорий", description = "Возвращает список категорий")
     public ResponseEntity<Page<CategoryDto>> getAllCategory(@RequestParam(name = "page", defaultValue = "0") @Min(0) int page,
@@ -60,6 +63,7 @@ public class CategoryController {
         return ResponseEntity.ok(categoryDtoPage);
     }
 
+    @PreAuthorize("hasAuthority('CATEGORY_CREATE')")
     @PostMapping
     @Operation(summary = "Создание категории", description = "Позволяет создавать каегорию")
     public ResponseEntity<CategoryDto> createCategory(@Validated @RequestBody CategoryDto categoryDto) {
@@ -72,6 +76,7 @@ public class CategoryController {
         return new ResponseEntity<>(categoryMapper.toDto(result.get()), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAuthority('CATEGORY_UPDATE')")
     @PutMapping("/{uid}")
     @Operation(summary = "Обновление категории", description = "Позволяет обновлять каегорию")
     public ResponseEntity<CategoryDto> updateCategory(@Parameter(description = "uid категории")
@@ -85,6 +90,7 @@ public class CategoryController {
         return ResponseEntity.ok(categoryMapper.toDto(result.get()));
     }
 
+    @PreAuthorize("hasAuthority('CATEGORY_DELETE')")
     @DeleteMapping("/{uid}")
     @Operation(summary = "Удаление категории", description = "Позволяет удалять каегорию")
     public ResponseEntity<CategoryDto> deleteCategory(@Parameter(description = "uid категории") @NotNull @PathVariable("uid") UUID uid) {
