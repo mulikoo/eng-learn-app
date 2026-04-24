@@ -14,6 +14,13 @@ import java.util.Set;
 @Entity
 @DynamicUpdate
 @Table(name = "user_progress")
+@NamedEntityGraph(name = "UserProgress.withWord", attributeNodes = {
+        @NamedAttributeNode(value = "word", subgraph = "word-subgraph")
+},subgraphs = {
+        @NamedSubgraph(name = "word-subgraph", attributeNodes = {
+                @NamedAttributeNode(value = "category")
+        })
+})
 public class UserProgress extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)

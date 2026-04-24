@@ -1,16 +1,15 @@
 package com.mulikoo.englearnapp.service;
 
 import com.mulikoo.englearnapp.dto.WordDto;
+import com.mulikoo.englearnapp.dto.view.UserProgressView;
 import com.mulikoo.englearnapp.entity.Category;
 import com.mulikoo.englearnapp.entity.User;
 import com.mulikoo.englearnapp.entity.UserProgress;
 import com.mulikoo.englearnapp.entity.Word;
 import com.mulikoo.englearnapp.enums.ClueType;
+import com.mulikoo.englearnapp.enums.UserProgressStatus;
 import com.mulikoo.englearnapp.enums.WordSortField;
-import com.mulikoo.englearnapp.exceptions.AttemptCounterException;
-import com.mulikoo.englearnapp.exceptions.ClueIsAlreadyUsedException;
-import com.mulikoo.englearnapp.exceptions.EntityAlreadyExistsException;
-import com.mulikoo.englearnapp.exceptions.EntityNotFoundException;
+import com.mulikoo.englearnapp.exceptions.*;
 import com.mulikoo.englearnapp.repository.CategoryRepository;
 import com.mulikoo.englearnapp.repository.UserProgressRepository;
 import com.mulikoo.englearnapp.repository.WordRepository;
@@ -26,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -110,9 +110,26 @@ public class WordService {
         User user = userService.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + username));
 
-        List<Long> learnedWordIdList = userProgressService.findWordIdsByUser(user);
+        List<UserProgressView> learnedList = userProgressService.findWordIdsByUser(user);
 
-        Optional<Word> wordOp = wordRepository.findNextByUserCategory(user.getCurrentCategory(), learnedWordIdList);
+        boolean isHasInLearning = learnedList.stream()
+                .anyMatch(view -> UserProgressStatus.IN_PROGRESS.equals(view.getStatus())
+                        || UserProgressStatus.SENT.equals(view.getStatus()));
+        if (isHasInLearning) {
+            throw new HasWordAlreadyInLearningException("У пользователя %s уже есть слова на изучении".formatted(username));
+        }
+
+        List<Long> wordIds = learnedList.stream()
+                .map(view -> view.getWordId())
+                .distinct()
+                .collect(Collectors.toList());
+
+        Optional<Word> wordOp = wordRepository.findNextByUserCategory(user.getCurrentCategory(), wordIds);
+
+        if (wordOp.isEmpty()) {
+            throw new AvailableWordsNotFoundInCategoryException("Слова по данной категории: %s закончились"
+                    .formatted(user.getCurrentCategory().getName()));
+        }
 
         wordOp.ifPresent(word -> userProgressService.registerUserProgress(user, word));
 
@@ -159,5 +176,15 @@ public class WordService {
         }
 
         return clueFromWord;
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Word> getCurrentLearningWord(@NonNull String username) {
+
+        UserProgress progress = userProgressRepository.findLastInLearningByUsernameAndStatuses(username,
+                        Set.of(UserProgressStatus.IN_PROGRESS, UserProgressStatus.SENT))
+                .orElseThrow(() -> new EntityNotFoundException("Не найден прогресс для пользователя %s".formatted(username)));
+
+        return Optional.of(progress.getWord());
     }
 }

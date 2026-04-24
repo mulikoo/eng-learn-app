@@ -5,6 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,6 +31,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .collect(Collectors.joining("; "));
 
         ErrorResponseDto exceptionDto = new ErrorResponseDto(errorString, ex.getClass().getSimpleName());
+        logger.error(ex.getMessage(), ex);
         return new ResponseEntity<>(exceptionDto, status);
     }
 
@@ -39,6 +41,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 ex.getMessage(),
                 ex.getClass().getSimpleName()
         );
+        logger.error(ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(exceptionDto);
@@ -50,8 +53,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 ex.getMessage(),
                 ex.getClass().getSimpleName()
         );
+        logger.error(ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(errorDto);
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ErrorResponseDto> handleAuthException(AuthorizationDeniedException ex, WebRequest request) {
+        ErrorResponseDto errorDto = new ErrorResponseDto(
+                ex.getMessage(),
+                ex.getClass().getSimpleName()
+        );
+        logger.error(ex.getMessage(), ex);
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
                 .body(errorDto);
     }
 

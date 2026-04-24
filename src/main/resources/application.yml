@@ -23,3 +23,7 @@ spring:
 logging:
   level:
     org.flywaydb: DEBUG
+
+rsa:
+  public-key: classpath:certs/public.pem
+  private-key: classpath:certs/private.pem
