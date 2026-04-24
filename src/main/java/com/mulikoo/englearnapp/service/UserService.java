@@ -2,11 +2,13 @@ package com.mulikoo.englearnapp.service;
 
 import com.mulikoo.englearnapp.dto.UserDto;
 import com.mulikoo.englearnapp.entity.Category;
+import com.mulikoo.englearnapp.entity.Role;
 import com.mulikoo.englearnapp.entity.User;
 import com.mulikoo.englearnapp.enums.UserSortField;
 import com.mulikoo.englearnapp.exceptions.EntityAlreadyExistsException;
 import com.mulikoo.englearnapp.exceptions.EntityNotFoundException;
 import com.mulikoo.englearnapp.repository.CategoryRepository;
+import com.mulikoo.englearnapp.repository.RoleRepository;
 import com.mulikoo.englearnapp.repository.UserRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +29,12 @@ import java.util.UUID;
 @Service
 public class UserService {
     private final static String DEFAULT_CATEGORY_NAME = "Базовый английский";
+    private final static String DEFAULT_ROLE = "USER";
 
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
     public Optional<User> findByUid(@Nullable UUID uid) {
         if (uid == null) {
@@ -58,12 +62,16 @@ public class UserService {
         Category category = categoryRepository.findByName(DEFAULT_CATEGORY_NAME)
                 .orElseThrow(() -> new EntityNotFoundException("Не найдена дефолтная категория"));
 
+        Role role = roleRepository.findByCode(DEFAULT_ROLE)
+                .orElseThrow(() -> new EntityNotFoundException("не найдена дефолтная роль " + DEFAULT_ROLE));
+
         User user = new User();
 
         user.setUid(UUID.randomUUID());
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
         user.setCurrentCategory(category);
+        user.setRole(role);
 
         return Optional.of(userRepository.save(user));
     }

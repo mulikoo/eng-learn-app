@@ -1,5 +1,6 @@
 package com.mulikoo.englearnapp.service;
 
+import com.mulikoo.englearnapp.dto.view.UserProgressView;
 import com.mulikoo.englearnapp.entity.User;
 import com.mulikoo.englearnapp.entity.UserProgress;
 import com.mulikoo.englearnapp.entity.Word;
@@ -44,7 +45,7 @@ public class UserProgressService {
         userProgressRepository.deleteById(id);
     }
 
-    public List<Long> findWordIdsByUser(User user) {
+    public List<UserProgressView> findWordIdsByUser(User user) {
 
         return userProgressRepository.findWordIdsByUser(user);
     }
