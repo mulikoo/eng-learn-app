@@ -112,4 +112,14 @@ public class UserService {
 
         return userRepository.findAll(PageRequest.of(page, size, sort));
     }
+
+    @Transactional
+    public void changeCategory(UUID uidCategory, String username){
+        Category category = categoryRepository.findByUid(uidCategory)
+                .orElseThrow(() -> new EntityNotFoundException("Category Not Found with uid: " + uidCategory));
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("Username Not Found with uid: " + username));
+        user.setCurrentCategory(category);
+    }
 }

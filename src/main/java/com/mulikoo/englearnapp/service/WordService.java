@@ -110,7 +110,9 @@ public class WordService {
         User user = userService.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + username));
 
-        List<UserProgressView> learnedList = userProgressService.findWordIdsByUser(user);
+        Category currentCategory = user.getCurrentCategory();
+
+        List<UserProgressView> learnedList = userProgressService.findWordIdsByUser(user, currentCategory);
 
         boolean isHasInLearning = learnedList.stream()
                 .anyMatch(view -> UserProgressStatus.IN_PROGRESS.equals(view.getStatus())

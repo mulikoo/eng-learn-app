@@ -3,10 +3,12 @@ package com.mulikoo.englearnapp.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Getter
 @Setter
 @Entity
+@DynamicUpdate
 @NamedEntityGraph(name = "User.userAndCurrentCategory", attributeNodes = {
         @NamedAttributeNode("currentCategory")
 })
