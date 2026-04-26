@@ -8,6 +8,7 @@ import com.mulikoo.englearnapp.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -94,7 +97,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('USER_DELETE')")
     @DeleteMapping("/{uid}")
-    @Operation(summary = "Удаление пользователя", description = "Позволяет удалять польхователя")
+    @Operation(summary = "Удаление пользователя", description = "Позволяет удалять пользователя")
     public ResponseEntity<UserDto> deleteUser(@Parameter(description = "uid категории") @NotNull @PathVariable("uid") UUID uid) {
         log.info("удаление пользователя по uid: {}", uid.toString());
 
@@ -102,5 +105,18 @@ public class UserController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @PreAuthorize("hasAuthority('USER_CATEGORY_CHANGE')")
+    @PatchMapping("/categoryChange")
+    @Operation(summary = "Изменение категории слова у юзера", description = "Изменяет категорию слова")
+    public ResponseEntity<Void> categoryChange(@RequestParam UUID uidCategory,
+                                               @AuthenticationPrincipal Jwt token) {
+        log.info("Изменение категории слова у юзера");
+
+        userService.changeCategory(uidCategory, token.getSubject());
+
+        return ResponseEntity.ok().build();
+    }
+
 }
 
