@@ -32,7 +32,7 @@ public class UserProgress extends BaseEntity {
     private UserProgressStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "word_id", nullable = false)
+    @JoinColumn(name = "word_id")
     private Word word;
 
     @Column(name = "attempt_counter", nullable = false)
@@ -40,5 +40,9 @@ public class UserProgress extends BaseEntity {
 
     @Column(name = "user_clue_types", columnDefinition = "TEXT")
     private Set<ClueType> userClueTypes;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "phrase_id")
+    private Phrase phrase;
 
 }

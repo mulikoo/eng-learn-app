@@ -24,7 +24,7 @@ import java.util.Optional;
 @Validated
 @RequiredArgsConstructor
 @Slf4j
-@Tag(name = "контроллер")
+@Tag(name = "контроллер для авторизации")
 @RestController
 public class AuthController {
 

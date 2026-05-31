@@ -164,14 +164,10 @@ public class WordService {
                         .formatted(username, wordUid)
                 )));
 
-        if (!CollectionUtils.isEmpty(userProgress.getUserClueTypes()) && userProgress.getUserClueTypes().contains(ClueType.TEXT)) {
-            throw new ClueIsAlreadyUsedException(("Подсказка для слова '%s' уже была запрошена".formatted(wordUid)));
-        }
-
         String clueFromWord = wordRepository.findClueByUid(wordUid)
                 .orElseThrow(() -> new EntityNotFoundException(("подсказка для слова с uid '%s' не найдена".formatted(wordUid))));
 
-        if (userProgress.getUserClueTypes() != null) {
+        if (userProgress.getUserClueTypes() != null && !userProgress.getUserClueTypes().contains(ClueType.TEXT)) {
             userProgress.getUserClueTypes().add(ClueType.TEXT);
         } else {
             userProgress.setUserClueTypes(new HashSet<>(Set.of(ClueType.TEXT)));
