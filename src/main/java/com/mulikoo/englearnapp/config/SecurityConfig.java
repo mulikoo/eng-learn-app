@@ -43,7 +43,7 @@ public class SecurityConfig {
     @Order(1)
     public SecurityFilterChain securityFilterChainRegister(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/auth/v1/register")
+                .securityMatcher("/auth/v1/register", "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**")
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -1,6 +1,7 @@
 package com.mulikoo.englearnapp.repository;
 
 import com.mulikoo.englearnapp.dto.view.UserProgressView;
+import com.mulikoo.englearnapp.dto.view.UserProgressViewPhrase;
 import com.mulikoo.englearnapp.entity.Category;
 import com.mulikoo.englearnapp.entity.User;
 import com.mulikoo.englearnapp.entity.UserProgress;
@@ -24,8 +25,17 @@ public interface UserProgressRepository extends JpaRepository<UserProgress, Long
             """)
     List<UserProgressView> findWordIdsByUser(@Param("user") User user, @Param("category") Category category);
 
+    @Query("""
+        SELECT up.phrase.id as phraseId, up.status as status FROM UserProgress up 
+        WHERE up.user = :user AND up.phrase.category = :category
+       """)
+    List<UserProgressViewPhrase> findPhraseIdByUser(@Param("user") User user, @Param("category") Category category);
+
     @Query("SELECT up FROM UserProgress up WHERE up.word.uid = :wordUid AND up.user.username = :username")
     Optional<UserProgress> findByWordUidAndUsername(@Param("wordUid") UUID wordUid, @Param("username") String username);
+
+    @Query("SELECT up FROM UserProgress up WHERE up.phrase.uid = :phraseUid AND up.user.username = :username")
+    Optional<UserProgress> findByPhraseUidAndUsername(@Param("phraseUid") UUID wordUid, @Param("username") String username);
 
     @EntityGraph(value = "UserProgress.withWord")
     @Query("SELECT up FROM UserProgress up WHERE up.user.username = :username " +

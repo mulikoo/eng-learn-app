@@ -1,10 +1,8 @@
 package com.mulikoo.englearnapp.service;
 
 import com.mulikoo.englearnapp.dto.view.UserProgressView;
-import com.mulikoo.englearnapp.entity.Category;
-import com.mulikoo.englearnapp.entity.User;
-import com.mulikoo.englearnapp.entity.UserProgress;
-import com.mulikoo.englearnapp.entity.Word;
+import com.mulikoo.englearnapp.dto.view.UserProgressViewPhrase;
+import com.mulikoo.englearnapp.entity.*;
 import com.mulikoo.englearnapp.enums.UserProgressStatus;
 import com.mulikoo.englearnapp.exceptions.AttemptCounterException;
 import com.mulikoo.englearnapp.exceptions.EntityNotFoundException;
@@ -51,6 +49,10 @@ public class UserProgressService {
         return userProgressRepository.findWordIdsByUser(user, category);
     }
 
+    public List<UserProgressViewPhrase> findPhraseIdByUser(@NonNull User user, @NonNull Category category) {
+        return userProgressRepository.findPhraseIdByUser(user, category);
+    }
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public UserProgress registerUserProgress(@NonNull User user, @NonNull Word word) {
         log.info("регистрация прогресса по слову с UUID: {} для пользователя: {}", user.getUid(), user.getUsername());
@@ -60,6 +62,19 @@ public class UserProgressService {
         userProgress.setUser(user);
         userProgress.setUid(UUID.randomUUID());
         userProgress.setWord(word);
+
+        return userProgressRepository.save(userProgress);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public UserProgress registerUserProgressForPhrase(@NonNull User user, @NonNull Phrase phrase) {
+        log.info("регистрация прогресса по слову с UUID: {} для пользователя: {}", user.getUid(), user.getUsername());
+
+        UserProgress userProgress = new UserProgress();
+        userProgress.setStatus(UserProgressStatus.SENT);
+        userProgress.setUser(user);
+        userProgress.setUid(UUID.randomUUID());
+        userProgress.setPhrase(phrase);
 
         return userProgressRepository.save(userProgress);
     }
@@ -91,6 +106,33 @@ public class UserProgressService {
         userProgressRepository.save(userProgress);
     }
 
+    public void updateProgressPhrase(@NonNull UUID phraseUid, @NonNull String username, boolean isCorrectAnswer) {
+        UserProgress userProgress = userProgressRepository.findByPhraseUidAndUsername(phraseUid, username)
+                .orElseThrow(() -> new EntityNotFoundException("Для пользователя %s не найден прогресс по фразе с uid: %s"
+                        .formatted(username, phraseUid)));
+
+        int count = userProgress.getAttemptCounter();
+
+        if (count >= MAX_ATTEMPT_COUNTER) {
+            userProgress.setStatus(UserProgressStatus.FAILED);
+            userProgressRepository.save(userProgress);
+            throw new AttemptCounterException("Превышено число попыток для слова с uid: %s для пользователя: %s"
+                    .formatted(phraseUid, username));
+        }
+
+        userProgress.setAttemptCounter(++count);
+
+        if (isCorrectAnswer) {
+            userProgress.setStatus(UserProgressStatus.LEARNED);
+            log.info("Правильный ответ, статус обновлён для прогресса с uid: {}", userProgress.getUid());
+        } else {
+            userProgress.setStatus(UserProgressStatus.IN_PROGRESS);
+            log.info("Неправильный ответ для прогресса с uid: {}, попытка {}/3", userProgress.getUid(), userProgress.getAttemptCounter());
+        }
+
+        userProgressRepository.save(userProgress);
+    }
+
     /**
      * Получение UserProgress по uid слова и username пользователя
      *
@@ -101,6 +143,11 @@ public class UserProgressService {
     public Optional<UserProgress> getUserProgressByWordUid(@NonNull UUID wordUid, @NonNull String username) {
 
         return userProgressRepository.findByWordUidAndUsername(wordUid, username);
+    }
+
+    public Optional<UserProgress> getUserProgressByPhraseUid(@NonNull UUID phraseUid, @NonNull String username) {
+
+        return userProgressRepository.findByPhraseUidAndUsername(phraseUid, username);
     }
 
 }
