@@ -5,9 +5,10 @@ import com.mulikoo.englearnapp.dto.UserDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+import org.mapstruct.ReportingPolicy;
 
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {CategoryMapper.class})
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {CategoryMapper.class}, unmappedTargetPolicy = ReportingPolicy.IGNORE )
 public interface UserMapper {
 
     @Mapping(target = "currentCategoryUid", source = "currentCategory.uid")
